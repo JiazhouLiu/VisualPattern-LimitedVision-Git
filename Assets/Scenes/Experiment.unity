@@ -1068,7 +1068,7 @@ MonoBehaviour:
   hDelta: 0.5
   vDelta: 0.5
   cardSize: 0.4
-  memoryTime: 20
+  memoryTime: 15
   numberOfRows: 3
   numberOfColumns: 12
   layout: 0
