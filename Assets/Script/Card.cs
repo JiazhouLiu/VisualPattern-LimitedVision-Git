@@ -13,10 +13,18 @@ public class Card : MonoBehaviour
     public bool seen = false;
     public bool selected = false;
 
+    public bool seenLogged = false;
+    public bool selectLogged = false;
+
     private Transform[] borders;
+
+    private ExperimentManager em;
 
     private void Start()
     {
+        if (GameObject.Find("ExperimentManager") != null) {
+            em = GameObject.Find("ExperimentManager").GetComponent<ExperimentManager>();
+        }
         borders = new Transform[4]{
             transform.GetChild(0).GetChild(0).GetChild(2),
             transform.GetChild(0).GetChild(0).GetChild(3),
@@ -27,25 +35,34 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
-        if (filled && seen && !selected) {
-            foreach (Transform t in borders) {
-                t.GetComponent<Image>().color = Color.yellow;
+        if (em.gameState == GameState.ShowPattern) {
+            if (filled && seen && !selected)
+            {
+                foreach (Transform t in borders)
+                {
+                    t.GetComponent<Image>().color = Color.yellow;
+                }
+            }
+            else if (filled && !seen && selected)
+            {
+                foreach (Transform t in borders)
+                {
+                    t.GetComponent<Image>().color = Color.blue;
+                }
+            }
+            else if (filled && seen && selected)
+            {
+                foreach (Transform t in borders)
+                {
+                    t.GetComponent<Image>().color = Color.green;
+                }
             }
         }
-
-        if (filled && !seen && selected)
+        else
         {
             foreach (Transform t in borders)
             {
-                t.GetComponent<Image>().color = Color.blue;
-            }
-        }
-
-        if (filled && seen && selected)
-        {
-            foreach (Transform t in borders)
-            {
-                t.GetComponent<Image>().color = Color.green;
+                t.GetComponent<Image>().color = Color.white;
             }
         }
     }

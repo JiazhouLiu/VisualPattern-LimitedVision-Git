@@ -72,7 +72,8 @@ public class ExperimentManager : MonoBehaviour
     private char fieldSeperator = ','; // It defines field seperate chracter
 
     // incremental with process
-    private GameState gameState;
+    [HideInInspector]
+    public GameState gameState;
     private int trialNo = 1;
 
     // refresh every trail
@@ -102,6 +103,8 @@ public class ExperimentManager : MonoBehaviour
     private int experimentSequence;
     private float currentAllSeenTime;
     private float currentAllSelectTime;
+    private List<float> seenTimeLog;
+    private List<float> selectTimeLog;
     StreamWriter writer;
     StreamWriter writerHead;
     StreamWriter writerAnswer;
@@ -115,6 +118,9 @@ public class ExperimentManager : MonoBehaviour
 
         LvL3TaskList = new List<string>();
         LvL5TaskList = new List<string>();
+
+        seenTimeLog = new List<float>();
+        selectTimeLog = new List<float>();
 
         Instructions = new List<Text>
         {
@@ -360,16 +366,19 @@ public class ExperimentManager : MonoBehaviour
             foreach (GameObject go in selectedCards)
                 Destroy(go);
             selectedCards.Clear();
-
-            allSeen = false;
-            allSelected = false;
-
-            scanTime = 0f;
-            selectTime = 0f;       
         }
 
+        allSeen = false;
+        allSelected = false;
+
+        scanTime = 0f;
+        selectTime = 0f;
+
+        seenTimeLog.Clear();
+        selectTimeLog.Clear();
+
         cards = GenerateCards();
-        //Debug.Log(layout);
+
         SetCardsPositions(cards, layout);
 
         LeftControllerText.text = "Start";
@@ -394,6 +403,12 @@ public class ExperimentManager : MonoBehaviour
     // Hide pattern 
     private void HidePattern(bool fromFailedTrial) {
         showingPattern = false;
+
+        foreach (GameObject go in cards)
+        {
+            go.GetComponent<Card>().seen = false;
+            go.GetComponent<Card>().selected = false;
+        }
 
         // reset timer and other variables
         startCount = false;
@@ -826,7 +841,7 @@ public class ExperimentManager : MonoBehaviour
             if(layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
                 FilterCube.GetComponent<BoxCollider>().isTrigger = false;
 
-            if (allSeen && allSelected)
+           if (allSeen && allSelected)
                 HidePattern(false);
             else
             {
@@ -877,8 +892,13 @@ public class ExperimentManager : MonoBehaviour
 
                     if (wtvp.x < 0.7f && wtvp.x > 0.3f && wtvp.y < 0.8f && wtvp.y > 0.2f && wtvp.z > 0f)
                     {
-                        if (go.transform.GetChild(0).GetComponent<Renderer>().isVisible)
+                        if (go.transform.GetChild(0).GetComponent<Renderer>().isVisible) {
                             go.GetComponent<Card>().seen = true;
+                            if (!go.GetComponent<Card>().seenLogged) {
+                                seenTimeLog.Add(scanTime);
+                                go.GetComponent<Card>().seenLogged = true;
+                            }
+                        }                            
                     }
                 }
                 else
@@ -926,6 +946,11 @@ public class ExperimentManager : MonoBehaviour
         {
             GameObject selectedCard = mainHandIU.GetUsingObject();
             selectedCard.GetComponent<Card>().selected = true;
+            if (!selectedCard.GetComponent<Card>().selectLogged)
+            {
+                selectTimeLog.Add(selectTime);
+                selectedCard.GetComponent<Card>().selectLogged = true;
+            }
         }
 
         foreach (GameObject go in cards)
@@ -1132,12 +1157,27 @@ public class ExperimentManager : MonoBehaviour
 
     private string GetSeenTime()
     {
-        return scanTime.ToString("#.0");
+        if (difficultyLevel == 3)
+        {
+            return seenTimeLog[0] + "," + seenTimeLog[1] + "," + seenTimeLog[2] + "," + ",";
+        }
+        else if (difficultyLevel == 5) {
+            return seenTimeLog[0] + "," + seenTimeLog[1] + "," + seenTimeLog[2] + "," + seenTimeLog[3] + "," + seenTimeLog[4];
+        }
+        return "";
     }
 
     private string GetSelectTime()
     {
-        return selectTime.ToString("#.0");
+        if (difficultyLevel == 3)
+        {
+            return selectTimeLog[0] + "," + selectTimeLog[1] + "," + selectTimeLog[2] + "," + ",";
+        }
+        else if (difficultyLevel == 5)
+        {
+            return selectTimeLog[0] + "," + selectTimeLog[1] + "," + selectTimeLog[2] + "," + selectTimeLog[3] + "," + selectTimeLog[4];
+        }
+        return "";
     }
 
     // Check if card filled property is true

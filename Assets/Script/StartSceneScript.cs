@@ -87,7 +87,8 @@ public class StartSceneScript : MonoBehaviour
             // Answers data log
             string writerAnswerFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + ParticipantID + "/Participant_" + ParticipantID + "_Answers.csv";
             writer = new StreamWriter(writerAnswerFilePath, false);
-            writer.WriteLine("ParticipantID,TrialNo,TrialID,Layout,Difficulty,Accuracy,AllSeenTime,AllSelectTime");
+            writer.WriteLine("ParticipantID,TrialNo,TrialID,Layout,Difficulty,Accuracy,Card1SeenTime,Card2SeenTime,Card3SeenTime,Card4SeenTime,Card5SeenTime," +
+                "Card1SelectTime,Card2SelectTime,Card3SelectTime,Card4SelectTime,Card5SelectTime");
             writer.Close();
         }
         else
