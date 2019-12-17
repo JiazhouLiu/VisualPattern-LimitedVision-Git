@@ -1,1 +1,1 @@
-ParticipantID,TrialNo,TrialID,Layout,MemoryType,DifficultyLevel,AccurateAnswer,AllSeenTime,AllSelectTime
+ParticipantID,TrialNo,TrialID,Layout,Difficulty,Accuracy,AllSeenTime,AllSelectTime

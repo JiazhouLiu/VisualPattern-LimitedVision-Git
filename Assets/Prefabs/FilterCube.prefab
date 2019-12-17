@@ -107,8 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33a2dda41cc6fb545a8538f685084f01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.8
+  radius: 1
   degreeOfView: 110
+  manager: {fileID: 0}
   CollisionDetection: 0
 --- !u!54 &6716073963693306441
 Rigidbody:

@@ -1,22 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
+public enum ControllerType
+{ 
+    HTCVIVE,
+    Odyssey
+}
+
 public class ControllerColor : MonoBehaviour {
-    //public GameObject touchBarPrefab;
     public Material white;
     public Material red;
-    //public Material orange;
-    //public Material yellow;
     public Material green;
-    //public Material sky;
-    //public Material blue;
-    //public Material purple;
 
-    //GameObject touchbar;
+    public ControllerType controllerType;
+
+    private int bodyIndex;
+    private int gripIndex;
+    private int grip2Index;
+    private int menuIndex;
+    private int thumbstickIndex;
+    private int trackpadIndex;
+    private int triggerIndex;
+    private int systemIndex;
 
     private void Start()
     {
+
+        if (controllerType == ControllerType.HTCVIVE)
+        {
+            bodyIndex = 1;
+            gripIndex = 7;
+            grip2Index = 8;
+            menuIndex = 2;
+            thumbstickIndex = -1;
+            trackpadIndex = 13;
+            triggerIndex = 16;
+            systemIndex = 11;
+
+
+            transform.parent.Find("TrackPadText").position = new Vector3(0, 0.01f, -0.05f);
+            transform.parent.Find("TrackPadText").localEulerAngles = new Vector3(90, 0, 0);
+            transform.parent.Find("TrackPadText").GetChild(0).GetComponent<TextMeshProUGUI>().fontSize = 12;
+        }
+        else if (controllerType == ControllerType.Odyssey) {
+            bodyIndex = 0;
+            gripIndex = 1;
+            grip2Index = -1;
+            menuIndex = 2;
+            thumbstickIndex = 3;
+            trackpadIndex = 5;
+            triggerIndex = 6;
+            systemIndex = -1;
+        }
+
+
         if (GameObject.Find("ExperimentManager") != null)
         {
             if (GameObject.Find("ExperimentManager").GetComponent<ExperimentManager>().mainHand == 0)
@@ -39,49 +78,55 @@ public class ControllerColor : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        
-        //if (transform.Find("tip") != null)
-        //{
-        //    if (transform.Find("tip").GetChild(0) != null)
-        //    {
-        //        if (transform.Find("tip").GetChild(0).childCount == 0)
-        //        {
-        //            touchbar = Instantiate(touchBarPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        //            touchbar.transform.SetParent(transform.Find("tip").GetChild(0));
-        //            touchbar.transform.localPosition = new Vector3(0, -0.0172f, 0.0602f);
-        //            touchbar.transform.localEulerAngles = new Vector3(90, 0, 0);
-
-        //        }
-        //    }
-        //}
-
-        //if (touchbar != null) {
-        //    if (this.transform.parent.name == "Controller (left)")
-        //    {
-        //        touchbar.GetComponent<Renderer>().material.color = Color.blue;
-        //    }
-        //    else
-        //    {
-        //        touchbar.GetComponent<Renderer>().material.color = Color.green;
-        //    }
-        //}
-
-
-        if (this.transform.childCount > 0)
+        if (transform.childCount > 0)
         {
-            GameObject body = this.transform.GetChild(0).gameObject;
-            GameObject grip = this.transform.GetChild(1).gameObject;
-            GameObject menu = this.transform.GetChild(2).gameObject;
-            GameObject thumbstick = this.transform.GetChild(3).gameObject;
-            GameObject trackpad = this.transform.GetChild(5).gameObject;
-            GameObject trigger = this.transform.GetChild(6).gameObject;
+            if (bodyIndex > 0)
+            {
+                GameObject body = transform.GetChild(bodyIndex).gameObject;
+                body.GetComponent<MeshRenderer>().material = white;
+            }
 
-            body.GetComponent<MeshRenderer>().material = white;
-            grip.GetComponent<MeshRenderer>().material = white;
-            thumbstick.GetComponent<MeshRenderer>().material = white;
-            menu.GetComponent<MeshRenderer>().material = white;
-            trigger.GetComponent<MeshRenderer>().material = red;
-            trackpad.GetComponent<MeshRenderer>().material = green;
+            if (gripIndex > 0)
+            {
+                GameObject grip = transform.GetChild(gripIndex).gameObject;
+                grip.GetComponent<MeshRenderer>().material = white;
+            }
+
+            if (grip2Index > 0)
+            {
+                GameObject grip2 = transform.GetChild(grip2Index).gameObject;
+                grip2.GetComponent<MeshRenderer>().material = white;
+            }
+
+            if (menuIndex > 0)
+            {
+                GameObject menu = transform.GetChild(menuIndex).gameObject;
+                menu.GetComponent<MeshRenderer>().material = white;
+            }
+
+            if (thumbstickIndex > 0)
+            {
+                GameObject thumbstick = transform.GetChild(thumbstickIndex).gameObject;
+                thumbstick.GetComponent<MeshRenderer>().material = white;
+            }
+
+            if (trackpadIndex > 0)
+            {
+                GameObject trackpad = transform.GetChild(trackpadIndex).gameObject;
+                trackpad.GetComponent<MeshRenderer>().material = green;
+            }
+
+            if (triggerIndex > 0) {
+                GameObject trigger = transform.GetChild(triggerIndex).gameObject;
+                trigger.GetComponent<MeshRenderer>().material = red;
+            }
+
+            if (systemIndex > 0)
+            {
+                GameObject systemButton = transform.GetChild(systemIndex).gameObject;
+                systemButton.GetComponent<MeshRenderer>().material = white;
+            }
+            
         }
 	}
 }

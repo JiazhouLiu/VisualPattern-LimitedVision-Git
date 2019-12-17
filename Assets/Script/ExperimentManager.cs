@@ -66,7 +66,7 @@ public class ExperimentManager : MonoBehaviour
     private Transform mainController;
     private VRTK_InteractUse mainHandIU;
     private VRTK_ControllerEvents mainHandCE;
-    private int maxTrialNo = 72;
+    private int maxTrialNo = 24;
     // string variables
     private char lineSeperater = '\n'; // It defines line seperate character
     private char fieldSeperator = ','; // It defines field seperate chracter
@@ -134,6 +134,9 @@ public class ExperimentManager : MonoBehaviour
         // setup adjusted height
         adjustedHeight = StartSceneScript.adjustedHeight;
 
+        // setup experimentSequence
+        experimentSequence = StartSceneScript.ExperimentSequence;
+
         // setup trail Number
         if (StartSceneScript.PublicTrialNumber != 0)
             trialNo = StartSceneScript.PublicTrialNumber;
@@ -146,7 +149,7 @@ public class ExperimentManager : MonoBehaviour
         writerHead = new StreamWriter(writerHeadFilePath, true);
 
         string writerAnswerFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + StartSceneScript.ParticipantID + "/Participant_" + StartSceneScript.ParticipantID + "_Answers.csv";
-        writer = new StreamWriter(writerAnswerFilePath, true);
+        writerAnswer = new StreamWriter(writerAnswerFilePath, true);
 
         LocalMemoryTime = memoryTime;
         // setup experiment
@@ -203,11 +206,11 @@ public class ExperimentManager : MonoBehaviour
 
         if (writer != null && Camera.main != null && mainLogController != null)
         {
-            SteamVR_TrackedController mainControllerScript = mainLogController.GetComponent<SteamVR_TrackedController>();
+            //SteamVR_TrackedController mainControllerScript = mainLogController.GetComponent<SteamVR_TrackedController>();
 
             writer.WriteLine(GetFixedTime() + "," + StartSceneScript.adjustedHeight + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
                 GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +
-                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles) + "," + mainControllerScript.menuPressed + "," + mainControllerScript.triggerPressed);
+                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles));
             writer.Flush();
         }
 
@@ -247,14 +250,16 @@ public class ExperimentManager : MonoBehaviour
                         case GameState.ShowPattern:   
                             break;
                         case GameState.SelectCards:
-                            LeftControllerText.text = "Ready";
-                            RightControllerText.text = "Ready";
-                            FinishAnswering();
-                            PrintTextToScreen(DashBoardText, "Great!\nPlease press <color=green>Ready</color> button to set up a new game.");
-                            //if (correctTrial)
-                            //    PrintTextToScreen(DashBoardText, "<color=green>Correct!</color>\nPlease press <color=green>Ready</color> button to set up a new game.");
-                            //else
-                            //    PrintTextToScreen(DashBoardText, "<color=red>Wrong!</color>\nPlease press <color=green>Ready</color> button to set up a new game.");
+                            if (selectedCards.Count == difficultyLevel) {
+                                LeftControllerText.text = "Ready";
+                                RightControllerText.text = "Ready";
+                                FinishAnswering();
+                                PrintTextToScreen(DashBoardText, "Great!\nPlease return to the original position and press <color=green>Ready</color> button to set up a new game.");
+                                //if (correctTrial)
+                                //    PrintTextToScreen(DashBoardText, "<color=green>Correct!</color>\nPlease press <color=green>Ready</color> button to set up a new game.");
+                                //else
+                                //    PrintTextToScreen(DashBoardText, "<color=red>Wrong!</color>\nPlease press <color=green>Ready</color> button to set up a new game.");
+                            }
                             break;
                         case GameState.Result:
                             LeftControllerText.text = "Start";
@@ -301,6 +306,14 @@ public class ExperimentManager : MonoBehaviour
         gameState = GameState.Prepare;
         LocalMemoryTime = memoryTime;
 
+        // change trial conditions based on trial number
+        // layout
+        if (GetCurrentCardsLayout() != Layout.NULL) {
+            layout = GetCurrentCardsLayout();
+        }
+        difficultyLevel = GetCurrentDifficulty();
+
+
         if (correctTrial) {
             if (GetTrialID() == "Training")
             {
@@ -336,11 +349,7 @@ public class ExperimentManager : MonoBehaviour
         PrintTextToScreen(TimerText, "");
         PrintTextToScreen(MemoryTypeText, "");
  
-        // change trial conditions based on trial number
-        // layout
-        
-        layout = (GetCurrentCardsLayout() == Layout.NULL ? layout : GetCurrentCardsLayout());
-        difficultyLevel = GetCurrentDifficulty();
+
 
         if (cards != null)
         {
@@ -360,6 +369,7 @@ public class ExperimentManager : MonoBehaviour
         }
 
         cards = GenerateCards();
+        //Debug.Log(layout);
         SetCardsPositions(cards, layout);
 
         LeftControllerText.text = "Start";
@@ -506,7 +516,6 @@ public class ExperimentManager : MonoBehaviour
     // Get current cards layouts based on sequence
     private Layout GetCurrentCardsLayout() {
         int currentTrialNo = trialNo - 1;
-
         switch (experimentSequence) {
             case 1:
                 if (currentTrialNo % 24 <= 5 && currentTrialNo % 24 >= 0)
@@ -980,7 +989,7 @@ public class ExperimentManager : MonoBehaviour
 
                 LvL3TaskList.RemoveAt(0);
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < difficultyLevel; i++)
                 {
                     PatternID[i] = int.Parse(PatternIDString[i]);
                 }
@@ -997,7 +1006,7 @@ public class ExperimentManager : MonoBehaviour
 
                 LvL5TaskList.RemoveAt(0);
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < difficultyLevel; i++)
                 {
                     PatternID[i] = int.Parse(PatternIDString[i]);
                 }
@@ -1118,17 +1127,17 @@ public class ExperimentManager : MonoBehaviour
     }
 
     private string GetAccuracy() {
-        return accurateNumber + "/" + difficultyLevel;
+        return accurateNumber + "";
     }
 
     private string GetSeenTime()
     {
-        return scanTime.ToString("#.0") + " s";
+        return scanTime.ToString("#.0");
     }
 
     private string GetSelectTime()
     {
-        return selectTime.ToString("#.0") + " s";
+        return selectTime.ToString("#.0");
     }
 
     // Check if card filled property is true
