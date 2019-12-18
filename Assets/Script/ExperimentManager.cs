@@ -9,7 +9,8 @@ using System.IO;
 public enum GameState
 {
     Prepare,
-    ShowPattern, // 10s
+    ShowPattern,
+    Distractor,
     SelectCards,
     Result
 }
@@ -97,6 +98,7 @@ public class ExperimentManager : MonoBehaviour
     private bool localTouchpadPressed = false;
     private bool localMenuPressed = false;
     private bool instruction = true;
+    private bool playgroundFlag = false;
 
     // log use
     private string trialID;
@@ -180,53 +182,25 @@ public class ExperimentManager : MonoBehaviour
         if (Input.GetKeyDown("c"))
             Changelayout();
 
-        if (gameState == GameState.SelectCards) {
+        if (gameState == GameState.ShowPattern)
+            TimerAndCheckScan();
+
+        if (gameState == GameState.Distractor) {
+            ShowPlayground();
+            PlaygroundInteraction();
+        }
+            
+
+        if (gameState == GameState.SelectCards)
+        {
+            HidePlayground();
             GameInteraction();
             PrintTextToScreen(DashBoardText, "Total number of white cards: <color=green>" + difficultyLevel + "</color>\nYou have selected: <color=green>" + selectedCards.Count + "</color>\n\nPlease press <color=green>Finish</color> button when you finish.");
         }
 
-        //DetectJoystick();
-
-        if (gameState == GameState.ShowPattern)
-            TimerAndCheckScan();
-
         CheckStateChange();
 
         WritingToLog();
-    }
-
-    // write to log file
-    private void WritingToLog() {
-        Transform mainLogController = null;
-
-        if (mainHand == 0)
-        {
-            if (GameObject.Find("Controller (left)") != null)
-                mainLogController = GameObject.Find("Controller (left)").transform;
-        }
-        else
-        {
-            if (GameObject.Find("Controller (right)") != null)
-                mainLogController = GameObject.Find("Controller (right)").transform;
-        }
-
-        if (writer != null && Camera.main != null && mainLogController != null)
-        {
-            //SteamVR_TrackedController mainControllerScript = mainLogController.GetComponent<SteamVR_TrackedController>();
-
-            writer.WriteLine(GetFixedTime() + "," + StartSceneScript.adjustedHeight + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
-                GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +
-                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles));
-            writer.Flush();
-        }
-
-        if (writerHead != null && Camera.main != null)
-        {
-            writerHead.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
-                GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +
-                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles));
-            writerHead.Flush();
-        }
     }
 
     // check button pressed for state change
@@ -255,16 +229,15 @@ public class ExperimentManager : MonoBehaviour
                             break;
                         case GameState.ShowPattern:   
                             break;
+                        case GameState.Distractor:
+                            break;
                         case GameState.SelectCards:
                             if (selectedCards.Count == difficultyLevel) {
                                 LeftControllerText.text = "Ready";
                                 RightControllerText.text = "Ready";
                                 FinishAnswering();
-                                PrintTextToScreen(DashBoardText, "Great!\nPlease return to the original position and press <color=green>Ready</color> button to set up a new game.");
-                                //if (correctTrial)
-                                //    PrintTextToScreen(DashBoardText, "<color=green>Correct!</color>\nPlease press <color=green>Ready</color> button to set up a new game.");
-                                //else
-                                //    PrintTextToScreen(DashBoardText, "<color=red>Wrong!</color>\nPlease press <color=green>Ready</color> button to set up a new game.");
+                                PrintTextToScreen(DashBoardText, "Accuracy: " + accurateNumber + " out of " + difficultyLevel + 
+                                    "\nPlease return to the original position and press <color=green>Ready</color> button to set up a new game.");
                             }
                             break;
                         case GameState.Result:
@@ -402,43 +375,87 @@ public class ExperimentManager : MonoBehaviour
 
     // Hide pattern 
     private void HidePattern(bool fromFailedTrial) {
+
         showingPattern = false;
 
         foreach (GameObject go in cards)
         {
             go.GetComponent<Card>().seen = false;
+            go.GetComponent<Card>().seenLogged = false;
             go.GetComponent<Card>().selected = false;
+            go.GetComponent<Card>().selectLogged = false;
         }
 
         // reset timer and other variables
         startCount = false;
-        
+
         PrintTextToScreen(SeenCardText, "");
         PrintTextToScreen(SelectCardText, "");
         PrintTextToScreen(MemoryTypeText, "");
         PrintTextToScreen(TimerText, "");
 
         if (!fromFailedTrial) {
-            LeftControllerText.text = "Finish";
-            RightControllerText.text = "Finish";
 
-            // flip to the back
-            foreach (GameObject card in cards)
+            if (gameState == GameState.ShowPattern)
             {
-                if (IsCardFilled(card))
-                    SetCardsColor(card.transform, Color.black);
-                StartCoroutine(Rotate(card.transform, new Vector3(0, 180, 0), 0.5f));
+                gameState = GameState.Distractor;
+
+                ShowPlayground();
             }
+            else {
+                LeftControllerText.text = "Finish";
+                RightControllerText.text = "Finish";
 
-            // move to next state
-            gameState = GameState.SelectCards;
-            // enable the interactable feature
-            foreach (GameObject card in cards)
+                // flip to the back
+                foreach (GameObject card in cards)
+                {
+                    if (IsCardFilled(card))
+                        SetCardsColor(card.transform, Color.black);
+                    StartCoroutine(Rotate(card.transform, new Vector3(0, 180, 0), 0.5f));
+                }
+
+                // move to next state
+                gameState = GameState.SelectCards;
+                // enable the interactable feature
+                foreach (GameObject card in cards)
+                {
+                    card.GetComponent<VRTK_InteractableObject>().enabled = true;
+                }
+            }
+        }
+    }
+
+    // check the result
+    private bool CheckResult()
+    {
+        bool finalResult = true;
+        int correctNum = 0;
+
+        if (selectedCards.Count != difficultyLevel)
+        {
+            finalResult = false;
+        }
+        else
+        {
+            foreach (GameObject selectedCard in selectedCards)
             {
-                card.GetComponent<VRTK_InteractableObject>().enabled = true;
+                if (!IsCardFilled(selectedCard))
+                {
+                    finalResult = false;
+                }
+                else
+                {
+                    correctNum++;
+                }
             }
         }
 
+        accurateNumber = correctNum;
+
+        string resultStr = (accurateNumber == difficultyLevel ? "Correct" : "Wrong");
+        Debug.Log(resultStr + "! " + accurateNumber + "/" + difficultyLevel);
+
+        return finalResult;
     }
 
     // Check Result (after clicking Finish Button)
@@ -447,12 +464,7 @@ public class ExperimentManager : MonoBehaviour
         CheckResult();
 
         // Write to Log
-        if (writerAnswer != null)
-        {
-            writerAnswer.WriteLine(StartSceneScript.ParticipantID + "," + GetTrialNumber() + "," + GetTrialID() + "," + GetLayout() + "," +
-                GetDifficulty() + "," + GetAccuracy() + "," + GetSeenTime() + "," + GetSelectTime());
-            writerAnswer.Flush();
-        }
+        WriteAnswerToLog();
 
         // increase trial No
         trialNo++;
@@ -499,34 +511,24 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
-    // check the result
-    private bool CheckResult() {
-        bool finalResult = true;
-        int correctNum = 0;
+    private void ShowPlayground() {
+        if (!playgroundFlag) {
+            playgroundFlag = true;
 
-        if (selectedCards.Count != difficultyLevel) {
-            finalResult = false;
         }
-        else {
-            foreach (GameObject selectedCard in selectedCards)
-            {
-                if (!IsCardFilled(selectedCard))
-                {
-                    finalResult = false;
-                }
-                else {
-                    correctNum++;
-                }
-            }
-        }
-
-        accurateNumber = correctNum;
-
-        string resultStr = (accurateNumber == difficultyLevel ? "Correct" : "Wrong");
-        Debug.Log(resultStr + "! " + accurateNumber + "/" + difficultyLevel);
-        
-        return finalResult;
     }
+
+    private void HidePlayground() {
+        if (playgroundFlag) {
+            playgroundFlag = false;
+
+        }
+    }
+
+    private void PlaygroundInteraction() {
+
+    }
+
 
     // Get current cards layouts based on sequence
     private Layout GetCurrentCardsLayout() {
@@ -581,6 +583,48 @@ public class ExperimentManager : MonoBehaviour
             return 3;
         else
             return 5;
+    }
+
+    // get current pattern
+    private int[] GetCurrentPattern()
+    {
+        if (difficultyLevel == 3)
+        {
+            if (LvL3TaskList.Count > 0)
+            {
+                int[] PatternID = new int[difficultyLevel];
+                string[] PatternIDString = new string[difficultyLevel];
+
+                PatternIDString = LvL3TaskList[0].Split(fieldSeperator);
+
+                LvL3TaskList.RemoveAt(0);
+
+                for (int i = 0; i < difficultyLevel; i++)
+                {
+                    PatternID[i] = int.Parse(PatternIDString[i]);
+                }
+                return PatternID;
+            }
+        }
+        else if (difficultyLevel == 5)
+        {
+            if (LvL5TaskList.Count > 0)
+            {
+                int[] PatternID = new int[difficultyLevel];
+                string[] PatternIDString = new string[difficultyLevel];
+
+                PatternIDString = LvL5TaskList[0].Split(fieldSeperator);
+
+                LvL5TaskList.RemoveAt(0);
+
+                for (int i = 0; i < difficultyLevel; i++)
+                {
+                    PatternID[i] = int.Parse(PatternIDString[i]);
+                }
+                return PatternID;
+            }
+        }
+        return null;
     }
 
 
@@ -671,7 +715,6 @@ public class ExperimentManager : MonoBehaviour
                 k++;
             }
         }
-        
 
         int[] currentPattern = GetCurrentPattern();
 
@@ -797,22 +840,6 @@ public class ExperimentManager : MonoBehaviour
             t.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
         }
     }
-    
-    // scale the text on screen
-    private void DetectJoystick() {
-        if (mainController != null && mainController.GetChild(0) != null && mainController.GetChild(0).childCount > 0) {
-            if (mainController.GetChild(0).GetChild(3).localEulerAngles.z > 15 && mainController.GetChild(0).GetChild(3).localEulerAngles.z < 20)
-            {
-                if (ScreenDashBoard.GetComponent<CanvasScaler>().matchWidthOrHeight <= 0.99f)
-                    ScreenDashBoard.GetComponent<CanvasScaler>().matchWidthOrHeight += 0.01f;
-            }
-            else if (mainController.GetChild(0).GetChild(3).localEulerAngles.z < 345 && mainController.GetChild(0).GetChild(3).localEulerAngles.z > 300)
-            {
-                if (ScreenDashBoard.GetComponent<CanvasScaler>().matchWidthOrHeight >= 0.01f)
-                    ScreenDashBoard.GetComponent<CanvasScaler>().matchWidthOrHeight -= 0.01f;
-            }
-        }
-    }
 
     // timer function
     private void TimerAndCheckScan() {
@@ -860,7 +887,6 @@ public class ExperimentManager : MonoBehaviour
                 }
                 else
                 {
-
                     if (allSeen && allSelected)
                     {
                         if (localTouchpadPressed)
@@ -974,73 +1000,8 @@ public class ExperimentManager : MonoBehaviour
             PrintTextToScreen(SelectCardText, "Please select all white cards");
             SelectCardText.color = Color.red;
         }
-
     }
-
-    private void PrintTextToScreen(Text textBoard, string text) {
-          textBoard.text = text;
-    }
-
-    // rotate coroutine with animation
-    private IEnumerator Rotate(Transform rotateObject, Vector3 angles, float duration)
-    {
-        if (rotateObject != null)
-        {
-            rotateObject.GetComponent<Card>().rotating = true;
-            rotateObject.GetComponent<VRTK_InteractableObject>().isUsable = false;
-            Quaternion startRotation = rotateObject.rotation;
-            Quaternion endRotation = Quaternion.Euler(angles) * startRotation;
-            for (float t = 0; t < duration; t += Time.deltaTime)
-            {
-                rotateObject.rotation = Quaternion.Lerp(startRotation, endRotation, t / duration);
-                yield return null;
-            }
-            rotateObject.rotation = endRotation;
-            rotateObject.GetComponent<VRTK_InteractableObject>().isUsable = true;
-
-            rotateObject.GetComponent<Card>().rotating = false;
-        }
-    }
-
-    private int[] GetCurrentPattern() {
-        if (difficultyLevel == 3)
-        {
-            if (LvL3TaskList.Count > 0)
-            {
-                int[] PatternID = new int[difficultyLevel];
-                string[] PatternIDString = new string[difficultyLevel];
-
-                PatternIDString = LvL3TaskList[0].Split(fieldSeperator);
-
-                LvL3TaskList.RemoveAt(0);
-
-                for (int i = 0; i < difficultyLevel; i++)
-                {
-                    PatternID[i] = int.Parse(PatternIDString[i]);
-                }
-                return PatternID;
-            }
-        }
-        else if (difficultyLevel == 5) {
-            if (LvL5TaskList.Count > 0)
-            {
-                int[] PatternID = new int[difficultyLevel];
-                string[] PatternIDString = new string[difficultyLevel];
-
-                PatternIDString = LvL5TaskList[0].Split(fieldSeperator);
-
-                LvL5TaskList.RemoveAt(0);
-
-                for (int i = 0; i < difficultyLevel; i++)
-                {
-                    PatternID[i] = int.Parse(PatternIDString[i]);
-                }
-                return PatternID;
-            }
-        }
-        return null;
-    }
-
+ 
 
     private void ReadPatternsFromInput() {
         string[] lines = new string[40];
@@ -1074,9 +1035,50 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Log related functions
-    /// </summary>
+    /// Log related functions START
+    // write to log file
+    private void WritingToLog()
+    {
+        Transform mainLogController = null;
+
+        if (mainHand == 0)
+        {
+            if (GameObject.Find("Controller (left)") != null)
+                mainLogController = GameObject.Find("Controller (left)").transform;
+        }
+        else
+        {
+            if (GameObject.Find("Controller (right)") != null)
+                mainLogController = GameObject.Find("Controller (right)").transform;
+        }
+
+        if (writer != null && Camera.main != null && mainLogController != null)
+        {
+            //SteamVR_TrackedController mainControllerScript = mainLogController.GetComponent<SteamVR_TrackedController>();
+
+            writer.WriteLine(GetFixedTime() + "," + StartSceneScript.adjustedHeight + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
+                GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +
+                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles));
+            writer.Flush();
+        }
+
+        if (writerHead != null && Camera.main != null)
+        {
+            writerHead.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
+                GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +
+                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles));
+            writerHead.Flush();
+        }
+    }
+
+    private void WriteAnswerToLog() {
+        if (writerAnswer != null)
+        {
+            writerAnswer.WriteLine(StartSceneScript.ParticipantID + "," + GetTrialNumber() + "," + GetTrialID() + "," + GetLayout() + "," +
+                GetDifficulty() + "," + GetAccuracy() + "," + GetSeenTime() + "," + GetSelectTime());
+            writerAnswer.Flush();
+        }
+    }
 
     float GetFixedTime()
     {
@@ -1180,6 +1182,16 @@ public class ExperimentManager : MonoBehaviour
         return "";
     }
 
+    string VectorToString(Vector3 v)
+    {
+        string text;
+        text = v.x + "," + v.y + "," + v.z;
+        return text;
+    }
+
+    /// Log functions END
+
+    /// Card property related functions START
     // Check if card filled property is true
     private bool IsCardFilled(GameObject go)
     {
@@ -1203,12 +1215,33 @@ public class ExperimentManager : MonoBehaviour
             return true;
         return false;
     }
+    /// Card property related functions END
 
-    string VectorToString(Vector3 v)
+    /// general functions
+    private void PrintTextToScreen(Text textBoard, string text)
     {
-        string text;
-        text = v.x + "," + v.y + "," + v.z;
-        return text;
+        textBoard.text = text;
+    }
+
+    // rotate coroutine with animation
+    private IEnumerator Rotate(Transform rotateObject, Vector3 angles, float duration)
+    {
+        if (rotateObject != null)
+        {
+            rotateObject.GetComponent<Card>().rotating = true;
+            rotateObject.GetComponent<VRTK_InteractableObject>().isUsable = false;
+            Quaternion startRotation = rotateObject.rotation;
+            Quaternion endRotation = Quaternion.Euler(angles) * startRotation;
+            for (float t = 0; t < duration; t += Time.deltaTime)
+            {
+                rotateObject.rotation = Quaternion.Lerp(startRotation, endRotation, t / duration);
+                yield return null;
+            }
+            rotateObject.rotation = endRotation;
+            rotateObject.GetComponent<VRTK_InteractableObject>().isUsable = true;
+
+            rotateObject.GetComponent<Card>().rotating = false;
+        }
     }
 
     public void QuitGame()
