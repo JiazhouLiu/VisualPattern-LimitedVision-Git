@@ -5,6 +5,7 @@ using VRTK;
 using TMPro;
 using UnityEngine.UI;
 using System.IO;
+using VRTK.GrabAttachMechanics;
 
 public enum GameState
 {
@@ -39,6 +40,8 @@ public class ExperimentManager : MonoBehaviour
     public Transform ScreenDashBoard;
     public Transform FilterCube;
     public Transform EdgeIndicator;
+    public Transform Hoop;
+    public Transform Ball;
     [Header("Task File")]
     public TextAsset Patterns3;
     public TextAsset Patterns5;
@@ -93,6 +96,7 @@ public class ExperimentManager : MonoBehaviour
     private bool allSelected = false;
     private float selectTime = 0;
     private int accurateNumber = 0;
+    private int shootCount = 0;
 
     // check on update for interaction
     private bool localTouchpadPressed = false;
@@ -346,6 +350,7 @@ public class ExperimentManager : MonoBehaviour
 
         scanTime = 0f;
         selectTime = 0f;
+        shootCount = 0;
 
         seenTimeLog.Clear();
         selectTimeLog.Clear();
@@ -515,6 +520,18 @@ public class ExperimentManager : MonoBehaviour
         if (!playgroundFlag) {
             playgroundFlag = true;
 
+            // hide cards
+            foreach (GameObject card in cards) {
+                card.SetActive(false);
+            }
+            if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle) {
+                EdgeIndicator.gameObject.SetActive(false);
+            }
+
+            // show hoop and ball
+            Hoop.gameObject.SetActive(true);
+            Ball.gameObject.SetActive(true);
+            
         }
     }
 
@@ -522,11 +539,36 @@ public class ExperimentManager : MonoBehaviour
         if (playgroundFlag) {
             playgroundFlag = false;
 
+            // show cards
+            foreach (GameObject card in cards)
+            {
+                card.SetActive(true);
+            }
+            if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
+            {
+                EdgeIndicator.gameObject.SetActive(true);
+            }
+
+            // hide hoop and ball
+            Hoop.gameObject.SetActive(false);
+            Ball.gameObject.SetActive(false);
+
+            gameState = GameState.SelectCards;
+            HidePattern(false);
         }
     }
 
     private void PlaygroundInteraction() {
+        if (Ball.GetComponent<VRTK_FixedJointGrabAttach>() != null) {
+            Ball.GetComponent<VRTK_FixedJointGrabAttach>().precisionGrab = true;
+        }
 
+        if (Ball.position.y > 2)
+            shootCount++;
+
+        if (Ball.position.y < 0.15f && shootCount > 0) {
+            HidePlayground();
+        }
     }
 
 
@@ -1062,7 +1104,7 @@ public class ExperimentManager : MonoBehaviour
             writer.Flush();
         }
 
-        if (writerHead != null && Camera.main != null)
+        if (writerHead != null && Camera.main != null && mainLogController != null)
         {
             writerHead.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
                 GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +

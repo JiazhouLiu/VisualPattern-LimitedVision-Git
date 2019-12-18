@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Basket : MonoBehaviour
 {
-    public GameObject score;
     public AudioClip basket;
 
     void OnCollisionEnter()
@@ -14,6 +13,7 @@ public class Basket : MonoBehaviour
 
     void OnTriggerEnter()
     {
+        Debug.Log("Yes");
         AudioSource.PlayClipAtPoint(basket, transform.position);
     }
 }
