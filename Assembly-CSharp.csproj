@@ -62,31 +62,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Basket.cs" />
+    <Compile Include="Assets\Script\Basket.cs" />
+    <Compile Include="Assets\Script\BasketBallStand.cs" />
     <Compile Include="Assets\Script\Card.cs" />
     <Compile Include="Assets\Script\ControllerColor.cs" />
     <Compile Include="Assets\Script\ExperimentManager.cs" />
     <Compile Include="Assets\Script\FilterCubeScript.cs" />
     <Compile Include="Assets\Script\StartSceneScript.cs" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
-    <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 10\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 3\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 7\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 11\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 8\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 4\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 0\PlaceHolder.txt" />
     <None Include="Assets\Resources\Shader\DoubleSided.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 5\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 9\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 1\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 12\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 6\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Participant 2\PlaceHolder.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/Joe Liu/Documents/Joe/Unity/VisualPattern-LimitedVision-Git/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

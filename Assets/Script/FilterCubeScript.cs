@@ -48,19 +48,5 @@ public class FilterCubeScript : MonoBehaviour
         {
             transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
         }
-
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.transform.parent != null && other.transform.parent.name.Contains("Card")) {
-
-            Vector3 wtvp = Camera.main.WorldToViewportPoint(other.transform.parent.position);
-
-            if (wtvp.x < 0.7f && wtvp.x > 0.3f && wtvp.y < 0.7f && wtvp.y > 0.3f && wtvp.z > 0f && other.transform.parent.GetChild(0).GetComponent<Renderer>().isVisible)
-            {
-                other.transform.parent.GetComponent<Card>().seen = true; 
-            }
-        }
     }
 }

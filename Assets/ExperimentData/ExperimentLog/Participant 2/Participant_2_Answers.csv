@@ -1,9 +1,1 @@
-ParticipantID,TrialNo,TrialID,Layout,Difficulty,Accuracy,AllSeenTime,AllSelectTime
-2,1,Training,Flat,3,2,9.9,11.6
-2,13,Training,FullCircle,3,3,5.7,7.4
-2,14,Training,FullCircle,3,3,9.3,10.1
-2,15,9,FullCircle,3,3,6.5,7.5
-2,11,7,LimitedFlat,5,5,5.8,8.7
-2,12,8,LimitedFlat,5,5,5.2,8.3
-2,5,3,Flat,5,4,13.6,14.2
-2,6,4,Flat,5,3,13.3,14.6
+ParticipantID,TrialNo,TrialID,Layout,Difficulty,Accuracy,Card1SeenTime,Card2SeenTime,Card3SeenTime,Card4SeenTime,Card5SeenTime,Card1SelectTime,Card2SelectTime,Card3SelectTime,Card4SelectTime,Card5SelectTime

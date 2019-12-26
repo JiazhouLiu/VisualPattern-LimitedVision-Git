@@ -35,34 +35,73 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
-        if (em.gameState == GameState.ShowPattern) {
-            if (filled && seen && !selected)
+        if (em == null)
+        {
+            if (GameObject.Find("FromStartScene") != null && 
+                GameObject.Find("FromStartScene").GetComponent<StartSceneScript>().trainingCount == 2)
             {
-                foreach (Transform t in borders)
+                if (filled && seen && !selected)
                 {
-                    t.GetComponent<Image>().color = Color.yellow;
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.yellow;
+                    }
+                }
+                else if (filled && !seen && selected)
+                {
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.blue;
+                    }
+                }
+                else if (filled && seen && selected)
+                {
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.green;
+                    }
                 }
             }
-            else if (filled && !seen && selected)
+            else
             {
                 foreach (Transform t in borders)
                 {
-                    t.GetComponent<Image>().color = Color.blue;
-                }
-            }
-            else if (filled && seen && selected)
-            {
-                foreach (Transform t in borders)
-                {
-                    t.GetComponent<Image>().color = Color.green;
+                    t.GetComponent<Image>().color = Color.white;
                 }
             }
         }
         else
         {
-            foreach (Transform t in borders)
+            if (em.gameState == GameState.ShowPattern)
             {
-                t.GetComponent<Image>().color = Color.white;
+                if (filled && seen && !selected)
+                {
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.yellow;
+                    }
+                }
+                else if (filled && !seen && selected)
+                {
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.blue;
+                    }
+                }
+                else if (filled && seen && selected)
+                {
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.green;
+                    }
+                }
+            }
+            else
+            {
+                foreach (Transform t in borders)
+                {
+                    t.GetComponent<Image>().color = Color.white;
+                }
             }
         }
     }

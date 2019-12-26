@@ -37,12 +37,12 @@ public class ExperimentManager : MonoBehaviour
     public Text TimerText;
     public TextMeshProUGUI LeftControllerText;
     public TextMeshProUGUI RightControllerText;
-    public Transform ScreenDashBoard;
     public Transform FilterCube;
     public Transform EdgeIndicator;
     public Transform Hoop;
     public Transform Ball;
     [Header("Task File")]
+    public TextAsset Patterns2;
     public TextAsset Patterns3;
     public TextAsset Patterns5;
 
@@ -51,6 +51,7 @@ public class ExperimentManager : MonoBehaviour
     public float vDelta;
     public float cardSize;
     public float memoryTime;
+    public float distractorTime;
     public int numberOfRows;
     public int numberOfColumns;
 
@@ -69,8 +70,10 @@ public class ExperimentManager : MonoBehaviour
     private float adjustedHeight = 1;
     private Transform mainController;
     private VRTK_InteractUse mainHandIU;
+    private VRTK_InteractTouch mainHandIT;
+    private int mainHandIndex = -1;
     private VRTK_ControllerEvents mainHandCE;
-    private int maxTrialNo = 24;
+    private int maxTrialNo = 28;
     // string variables
     private char lineSeperater = '\n'; // It defines line seperate character
     private char fieldSeperator = ','; // It defines field seperate chracter
@@ -85,6 +88,8 @@ public class ExperimentManager : MonoBehaviour
     private List<GameObject> selectedCards;
     private bool correctTrial = true; // true if user answer all correct cards
     private float LocalMemoryTime;
+    private float localDistractorTime;
+    private List<string> LvL2TaskList;
     private List<string> LvL3TaskList;
     private List<string> LvL5TaskList;
 
@@ -92,6 +97,7 @@ public class ExperimentManager : MonoBehaviour
     private bool showingPattern = false; // show pattern stage
     private bool startCount = false; // show pattern stage
     private bool allSeen = false;
+    [HideInInspector]
     private float scanTime = 0;
     private bool allSelected = false;
     private float selectTime = 0;
@@ -103,13 +109,15 @@ public class ExperimentManager : MonoBehaviour
     private bool localMenuPressed = false;
     private bool instruction = true;
     private bool playgroundFlag = false;
+    private int basketballScore = 0;
 
     // log use
     private string trialID;
     private int experimentSequence;
     private float currentAllSeenTime;
     private float currentAllSelectTime;
-    private List<float> seenTimeLog;
+    [HideInInspector]
+    public List<float> seenTimeLog;
     private List<float> selectTimeLog;
     StreamWriter writer;
     StreamWriter writerHead;
@@ -122,6 +130,7 @@ public class ExperimentManager : MonoBehaviour
         cards = new List<GameObject>();
         selectedCards = new List<GameObject>();
 
+        LvL2TaskList = new List<string>();
         LvL3TaskList = new List<string>();
         LvL5TaskList = new List<string>();
 
@@ -164,6 +173,7 @@ public class ExperimentManager : MonoBehaviour
         writerAnswer = new StreamWriter(writerAnswerFilePath, true);
 
         LocalMemoryTime = memoryTime;
+        localDistractorTime = distractorTime;
         // setup experiment
         PrepareExperiment();
     }
@@ -197,7 +207,6 @@ public class ExperimentManager : MonoBehaviour
 
         if (gameState == GameState.SelectCards)
         {
-            HidePlayground();
             GameInteraction();
             PrintTextToScreen(DashBoardText, "Total number of white cards: <color=green>" + difficultyLevel + "</color>\nYou have selected: <color=green>" + selectedCards.Count + "</color>\n\nPlease press <color=green>Finish</color> button when you finish.");
         }
@@ -254,33 +263,6 @@ public class ExperimentManager : MonoBehaviour
                     }
                 }
             }
-
-            // toggle instructions
-            if (mainHandCE.buttonTwoPressed)
-            {
-                localMenuPressed = true;
-            }
-            else {
-                if (localMenuPressed) {
-                    if (instruction)
-                    {
-                        instruction = false;
-                        foreach (Text text in Instructions)
-                        {
-                            text.gameObject.SetActive(false);
-                        }
-                    }
-                    else
-                    {
-                        instruction = true;
-                        foreach (Text text in Instructions)
-                        {
-                            text.gameObject.SetActive(true);
-                        }
-                    }
-                }
-                localMenuPressed = false;
-            }
         }
     }
 
@@ -288,40 +270,32 @@ public class ExperimentManager : MonoBehaviour
     private void PrepareExperiment() {
         gameState = GameState.Prepare;
         LocalMemoryTime = memoryTime;
+        localDistractorTime = distractorTime;
 
         // change trial conditions based on trial number
         // layout
-        if (GetCurrentCardsLayout() != Layout.NULL) {
+        if (GetCurrentCardsLayout() != Layout.NULL)
             layout = GetCurrentCardsLayout();
-        }
         difficultyLevel = GetCurrentDifficulty();
 
 
         if (correctTrial) {
             if (GetTrialID() == "Training")
-            {
-                PrintTextToScreen(DashBoardText, "This is a training session, you need to remember the position for 3 white cards.\n\nPlease press " +
+                PrintTextToScreen(DashBoardText, "This is a training session, you need to remember the position for " + difficultyLevel + " white cards.\n\nPlease press " +
                     "<color=green>Start</color> button to start the memory game.");
-            }
-            else {
+            else
                 PrintTextToScreen(DashBoardText, "Please get ready, your performance will be recorded, you need to remember the position for " + difficultyLevel + 
                     " white cards.\n\nPlease press <color=green>Start</color> button to start the memory game.");
-            }
         } 
         else {
             HidePattern(true);
-            if (!allSeen)
-            {
+            if (!allSeen && allSelected)
                 PrintTextToScreen(DashBoardText, "You haven't seen all the cards.\n\nPlease press <color=green>Start</color> button to restart a new memory game.");
-            }
-            else if (!allSelected)
-            {
+            else if (!allSelected && allSeen)
                 PrintTextToScreen(DashBoardText, "You haven't selected all the cards.\n\nPlease press <color=green>Start</color> button to start the memory game.");
-            }
-            else if (!allSelected && !allSeen) {
+            else if (!allSelected && !allSeen)
                 PrintTextToScreen(DashBoardText, "You haven't seen and selected all the cards.\n\nYou haven't seen all the cards.\n\n" +
                     "Please press <color=green>Start</color> button to start the memory game.");
-            }
         }  
 
         correctTrial = true;
@@ -402,11 +376,7 @@ public class ExperimentManager : MonoBehaviour
         if (!fromFailedTrial) {
 
             if (gameState == GameState.ShowPattern)
-            {
                 gameState = GameState.Distractor;
-
-                ShowPlayground();
-            }
             else {
                 LeftControllerText.text = "Finish";
                 RightControllerText.text = "Finish";
@@ -437,21 +407,15 @@ public class ExperimentManager : MonoBehaviour
         int correctNum = 0;
 
         if (selectedCards.Count != difficultyLevel)
-        {
             finalResult = false;
-        }
         else
         {
             foreach (GameObject selectedCard in selectedCards)
             {
                 if (!IsCardFilled(selectedCard))
-                {
                     finalResult = false;
-                }
                 else
-                {
                     correctNum++;
-                }
             }
         }
 
@@ -495,80 +459,139 @@ public class ExperimentManager : MonoBehaviour
     {
         GameObject selectedCard = null;
 
-        // assign left and right controllers interaction use
-        if (mainHandIU == null) {
-            if (mainHand == 0 && GameObject.Find("LeftControllerAlias") != null)
-                mainHandIU = GameObject.Find("LeftControllerAlias").GetComponent<VRTK_InteractUse>();
-            else if (mainHand == 1 && GameObject.Find("RightControllerAlias") != null)
-                mainHandIU = GameObject.Find("RightControllerAlias").GetComponent<VRTK_InteractUse>();
-        }
+        // assign left and right controllers interaction touch
+        if (mainHandIT == null)
+            mainHandIT = GameObject.Find("RightControllerAlias").GetComponent<VRTK_InteractTouch>();
 
-        if (mainHandIU.GetUsingObject() != null && !IsCardRotating(mainHandIU.GetUsingObject()))
-        {
-            selectedCard = mainHandIU.GetUsingObject();
-            if (!IsCardFlipped(selectedCard) && selectedCards.Count < difficultyLevel) // not flipped
+        // assign main hand index
+        if (mainHandIndex == -1)
+            mainHandIndex = (int)GameObject.Find("Controller (right)").GetComponent<VRTK_TrackedController>().index;
+
+        if (mainHandIT.GetTouchedObject() != null) {
+            // haptic function
+            SteamVR_Controller.Input(mainHandIndex).TriggerHapticPulse(1500);
+
+            if (!IsCardRotating(mainHandIT.GetTouchedObject()))
             {
-                selectedCards.Add(selectedCard);
-                selectedCard.GetComponent<Card>().flipped = true;
-                StartCoroutine(Rotate(selectedCard.transform, new Vector3(0, 180, 0), 0.5f));
-                SetCardsColor(selectedCard.transform, Color.white);
+                selectedCard = mainHandIT.GetTouchedObject();
+                if (!IsCardFlipped(selectedCard) && selectedCards.Count < difficultyLevel) // not flipped
+                {
+                    selectedCards.Add(selectedCard);
+                    selectedCard.GetComponent<Card>().flipped = true;
+                    StartCoroutine(Rotate(selectedCard.transform, new Vector3(0, 180, 0), 0.5f));
+                    SetCardsColor(selectedCard.transform, Color.white);
+                }
             }
-        }
+        } 
+
+        /// (OLD) click to select cards
+        // assign left and right controllers interaction use
+        //if (mainHandIU == null) {
+        //    if (mainHand == 0 && GameObject.Find("LeftControllerAlias") != null)
+        //        mainHandIU = GameObject.Find("LeftControllerAlias").GetComponent<VRTK_InteractUse>();
+        //    else if (mainHand == 1 && GameObject.Find("RightControllerAlias") != null)
+        //        mainHandIU = GameObject.Find("RightControllerAlias").GetComponent<VRTK_InteractUse>();
+        //}
+
+        //if (mainHandIU.GetUsingObject() != null && !IsCardRotating(mainHandIU.GetUsingObject()))
+        //{
+        //    selectedCard = mainHandIU.GetUsingObject();
+        //    if (!IsCardFlipped(selectedCard) && selectedCards.Count < difficultyLevel) // not flipped
+        //    {
+        //        selectedCards.Add(selectedCard);
+        //        selectedCard.GetComponent<Card>().flipped = true;
+        //        StartCoroutine(Rotate(selectedCard.transform, new Vector3(0, 180, 0), 0.5f));
+        //        SetCardsColor(selectedCard.transform, Color.white);
+        //    }
+        //}
     }
 
     private void ShowPlayground() {
         if (!playgroundFlag) {
             playgroundFlag = true;
+            PrintTextToScreen(DashBoardText, "Please return to the original position and face to the front.");
 
             // hide cards
             foreach (GameObject card in cards) {
                 card.SetActive(false);
             }
-            if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle) {
+            if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
                 EdgeIndicator.gameObject.SetActive(false);
-            }
+            if(layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
+                FilterCube.gameObject.SetActive(false);
 
-            // show hoop and ball
-            Hoop.gameObject.SetActive(true);
-            Ball.gameObject.SetActive(true);
-            
+            // check position
+            if (Camera.main.transform.position.x < 0.2f && Camera.main.transform.position.x > -0.2f && Camera.main.transform.position.z < 0.2f &&
+               Camera.main.transform.position.z > -0.2f && ((Camera.main.transform.localEulerAngles.y < 20 && Camera.main.transform.localEulerAngles.y > 0) || (Camera.main.transform.localEulerAngles.y < 360 && Camera.main.transform.localEulerAngles.y > 340)))
+            {
+                // show hoop and ball
+                Hoop.gameObject.SetActive(true);
+                Ball.gameObject.SetActive(true);
+                PrintTextToScreen(DashBoardText, "Play Basketball game in 15 seconds. Try to score as many as you can.");
+                GameObject.Find("Hoop").GetComponent<Basket>().ResetScore();
+            }
+            else
+                playgroundFlag = false;
         }
     }
 
     private void HidePlayground() {
         if (playgroundFlag) {
             playgroundFlag = false;
+            PrintTextToScreen(DashBoardText, "Please return to the original position and face to the front.");
 
-            // show cards
-            foreach (GameObject card in cards)
+            if (Hoop.gameObject.activeSelf)
             {
-                card.SetActive(true);
-            }
-            if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
-            {
-                EdgeIndicator.gameObject.SetActive(true);
+                // hide hoop and ball
+                Hoop.GetChild(3).gameObject.SetActive(true);
+                Hoop.gameObject.SetActive(false);
             }
 
-            // hide hoop and ball
-            Hoop.gameObject.SetActive(false);
-            Ball.gameObject.SetActive(false);
+            // reset ball position
+            if (Ball.gameObject.activeSelf) {
+                Ball.transform.position = new Vector3(0, 1.144f, 0.5f);
+                Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                Ball.gameObject.SetActive(false);
+            }           
 
-            gameState = GameState.SelectCards;
-            HidePattern(false);
+            // check position
+            if (Camera.main.transform.position.x < 0.2f && Camera.main.transform.position.x > -0.2f && Camera.main.transform.position.z < 0.2f &&
+               Camera.main.transform.position.z > -0.2f && ((Camera.main.transform.localEulerAngles.y < 20 && Camera.main.transform.localEulerAngles.y > 0) || (Camera.main.transform.localEulerAngles.y < 360 && Camera.main.transform.localEulerAngles.y > 340)))
+            {
+                // show cards
+                foreach (GameObject card in cards)
+                {
+                    card.SetActive(true);
+                }
+                if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
+                    EdgeIndicator.gameObject.SetActive(true);
+                if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
+                    FilterCube.gameObject.SetActive(true);
+
+                HidePattern(false);
+            }
+            else
+                playgroundFlag = true;
         }
     }
 
     private void PlaygroundInteraction() {
-        if (Ball.GetComponent<VRTK_FixedJointGrabAttach>() != null) {
-            Ball.GetComponent<VRTK_FixedJointGrabAttach>().precisionGrab = true;
-        }
+        // timer function
+        if (playgroundFlag) {
+            if (localDistractorTime >= 0)
+                localDistractorTime -= Time.deltaTime;
+        } 
 
-        if (Ball.position.y > 2)
-            shootCount++;
+        PrintTextToScreen(TimerText, "Time Left: " + localDistractorTime.ToString("##.00") + "s");
 
-        if (Ball.position.y < 0.15f && shootCount > 0) {
+        if (localDistractorTime < 3f)
+            TimerText.color = Color.red;
+        else
+            TimerText.color = Color.green;
+
+        if (localDistractorTime < 0.05f)
             HidePlayground();
-        }
     }
 
 
@@ -577,38 +600,38 @@ public class ExperimentManager : MonoBehaviour
         int currentTrialNo = trialNo - 1;
         switch (experimentSequence) {
             case 1:
-                if (currentTrialNo % 24 <= 5 && currentTrialNo % 24 >= 0)
+                if (currentTrialNo % 28 <= 6 && currentTrialNo % 28 >= 0)
                     return Layout.Flat;
-                else if (currentTrialNo % 24 <= 11 && currentTrialNo % 24 >= 6)
+                else if (currentTrialNo % 28 <= 13 && currentTrialNo % 28 >= 7)
                     return Layout.LimitedFlat;
-                else if (currentTrialNo % 24 <= 17 && currentTrialNo % 24 >= 12)
+                else if (currentTrialNo % 28 <= 20 && currentTrialNo % 28 >= 14)
                     return Layout.FullCircle;
                 else
                     return Layout.LimitedFullCircle;
             case 2:
-                if (currentTrialNo % 24 <= 5 && currentTrialNo % 24 >= 0)
+                if (currentTrialNo % 28 <= 6 && currentTrialNo % 28 >= 0)
                     return Layout.LimitedFlat;
-                else if (currentTrialNo % 24 <= 11 && currentTrialNo % 24 >= 6)
+                else if (currentTrialNo % 28 <= 13 && currentTrialNo % 28 >= 7)
                     return Layout.Flat;
-                else if (currentTrialNo % 24 <= 17 && currentTrialNo % 24 >= 12)
+                else if (currentTrialNo % 28 <= 20 && currentTrialNo % 28 >= 14)
                     return Layout.LimitedFullCircle;
                 else
                     return Layout.FullCircle;
             case 3:
-                if (currentTrialNo % 24 <= 5 && currentTrialNo % 24 >= 0)
+                if (currentTrialNo % 28 <= 6 && currentTrialNo % 28 >= 0)
                     return Layout.FullCircle;
-                else if (currentTrialNo % 24 <= 11 && currentTrialNo % 24 >= 6)
+                else if (currentTrialNo % 28 <= 13 && currentTrialNo % 28 >= 7)
                     return Layout.LimitedFullCircle;
-                else if (currentTrialNo % 24 <= 17 && currentTrialNo % 24 >= 12)
+                else if (currentTrialNo % 28 <= 20 && currentTrialNo % 28 >= 14)
                     return Layout.Flat;
                 else
                     return Layout.LimitedFlat;
             case 4:
-                if (currentTrialNo % 24 <= 5 && currentTrialNo % 24 >= 0)
+                if (currentTrialNo % 28 <= 6 && currentTrialNo % 28 >= 0)
                     return Layout.LimitedFullCircle;
-                else if (currentTrialNo % 24 <= 11 && currentTrialNo % 24 >= 6)
+                else if (currentTrialNo % 28 <= 13 && currentTrialNo % 28 >= 7)
                     return Layout.FullCircle;
-                else if (currentTrialNo % 24 <= 17 && currentTrialNo % 24 >= 12)
+                else if (currentTrialNo % 28 <= 20 && currentTrialNo % 28 >= 14)
                     return Layout.LimitedFlat;
                 else
                     return Layout.Flat;
@@ -620,8 +643,10 @@ public class ExperimentManager : MonoBehaviour
 
     private int GetCurrentDifficulty()
     {
-        int tmp2 = (trialNo - 1) % 6;
-        if (tmp2 == 0 || tmp2 == 1 || tmp2 == 2 || tmp2 == 3)
+        int tmp = (trialNo - 1) % 7;
+        if (tmp == 0)
+            return 2;
+        else if (tmp == 1 || tmp == 2 || tmp == 3)
             return 3;
         else
             return 5;
@@ -630,7 +655,25 @@ public class ExperimentManager : MonoBehaviour
     // get current pattern
     private int[] GetCurrentPattern()
     {
-        if (difficultyLevel == 3)
+        if (difficultyLevel == 2)
+        {
+            if (LvL2TaskList.Count > 0)
+            {
+                int[] PatternID = new int[difficultyLevel];
+                string[] PatternIDString = new string[difficultyLevel];
+
+                PatternIDString = LvL2TaskList[0].Split(fieldSeperator);
+
+                LvL2TaskList.RemoveAt(0);
+
+                for (int i = 0; i < difficultyLevel; i++)
+                {
+                    PatternID[i] = int.Parse(PatternIDString[i]);
+                }
+                return PatternID;
+            }
+        }
+        else if (difficultyLevel == 3)
         {
             if (LvL3TaskList.Count > 0)
             {
@@ -767,9 +810,8 @@ public class ExperimentManager : MonoBehaviour
                 cards[currentPattern[i] - 1].GetComponent<Card>().filled = true;
             }
         }
-        else {
+        else
             Debug.LogError("Pattern Used Up!!");
-        }
 
         return cards;
     }
@@ -787,9 +829,7 @@ public class ExperimentManager : MonoBehaviour
                 localCards[index].transform.localEulerAngles = new Vector3(0, localCards[index].transform.localEulerAngles.y, 0);
 
                 if (localLayout != Layout.FullCircle && localLayout != Layout.LimitedFullCircle)
-                {
                     localCards[index].transform.localEulerAngles = new Vector3(0, 0, 0);
-                }
                 else // FULL CIRCLE
                 {
                     // change orientation
@@ -875,12 +915,9 @@ public class ExperimentManager : MonoBehaviour
     // Set Card Color
     private void SetCardsColor(Transform t, Color color) {
         if (color == Color.white)
-        {
             t.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
-        }
-        else {
+        else
             t.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
-        }
     }
 
     // timer function
@@ -898,18 +935,14 @@ public class ExperimentManager : MonoBehaviour
 
         PrintTextToScreen(DashBoardText, "");
 
-        if (MemoryTypeText.text == "") {
+        if (MemoryTypeText.text == "")
             PrintTextToScreen(MemoryTypeText, "Please <color=red>remember</color> all the positions for " + difficultyLevel + " white cards.");
-        }
 
         CheckFilledScanned();
         CheckEverythingSelected();
 
         if (LocalMemoryTime < 0.05f)
         {
-            if(layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
-                FilterCube.GetComponent<BoxCollider>().isTrigger = false;
-
            if (allSeen && allSelected)
                 HidePattern(false);
             else
@@ -918,27 +951,28 @@ public class ExperimentManager : MonoBehaviour
                 PrepareExperiment();
             }
         }
-        else
-        {
-            // assign left and right controllers interaction use
-            if (mainHandCE != null)
-            {
-                if (mainHandCE.touchpadPressed)
-                {
-                    localTouchpadPressed = true;
-                }
-                else
-                {
-                    if (allSeen && allSelected)
-                    {
-                        if (localTouchpadPressed)
-                            HidePattern(false);
-                    }
+        /// (OLD) click touchpad to finish acquisition
+        //else
+        //{
+        //    // assign left and right controllers interaction use
+        //    if (mainHandCE != null)
+        //    {
+        //        if (mainHandCE.touchpadPressed)
+        //        {
+        //            localTouchpadPressed = true;
+        //        }
+        //        else
+        //        {
+        //            if (allSeen && allSelected)
+        //            {
+        //                if (localTouchpadPressed)
+        //                    HidePattern(false);
+        //            }
 
-                    localTouchpadPressed = false;
-                }
-            }
-        } 
+        //            localTouchpadPressed = false;
+        //        }
+        //    }
+        //} 
     }
 
     // check user viewport
@@ -971,13 +1005,26 @@ public class ExperimentManager : MonoBehaviour
                 }
                 else
                 { // check in boxed and in view port in limited flat layout
-                    FilterCube.GetComponent<BoxCollider>().isTrigger = true;
+                    if (Vector3.Distance(Camera.main.transform.position, go.transform.position) < 1.4f) {
+                        Vector3 wtvp = Camera.main.WorldToViewportPoint(go.transform.position);
+
+                        if (wtvp.x < 0.7f && wtvp.x > 0.3f && wtvp.y < 0.8f && wtvp.y > 0.2f && wtvp.z > 0f)
+                        {
+                            if (go.transform.GetChild(0).GetComponent<Renderer>().isVisible)
+                            {
+                                go.GetComponent<Card>().seen = true;
+                                if (!go.GetComponent<Card>().seenLogged)
+                                {
+                                    seenTimeLog.Add(scanTime);
+                                    go.GetComponent<Card>().seenLogged = true;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if (!go.GetComponent<Card>().seen)
-                {
                     allSeen = false;
-                }
             }
         }
 
@@ -1001,18 +1048,20 @@ public class ExperimentManager : MonoBehaviour
 
         allSelected = true;
 
-        // assign left and right controllers interaction use
-        if (mainHandIU == null)
-        {
-            if (mainHand == 0 && GameObject.Find("LeftControllerAlias") != null)
-                mainHandIU = GameObject.Find("LeftControllerAlias").GetComponent<VRTK_InteractUse>();
-            else if (mainHand == 1 && GameObject.Find("RightControllerAlias") != null)
-                mainHandIU = GameObject.Find("RightControllerAlias").GetComponent<VRTK_InteractUse>();
-        }
+        // assign left and right controllers interaction touch
+        if (mainHandIT == null)
+            mainHandIT = GameObject.Find("RightControllerAlias").GetComponent<VRTK_InteractTouch>();
 
-        if (mainHandIU.GetUsingObject() != null)
+        // assign main hand index
+        if (mainHandIndex == -1)
+            mainHandIndex = (int)GameObject.Find("Controller (right)").GetComponent<VRTK_TrackedController>().index;
+
+        if (mainHandIT.GetTouchedObject() != null)
         {
-            GameObject selectedCard = mainHandIU.GetUsingObject();
+            // haptic function
+            SteamVR_Controller.Input(mainHandIndex).TriggerHapticPulse(1500);
+
+            GameObject selectedCard = mainHandIT.GetTouchedObject();
             selectedCard.GetComponent<Card>().selected = true;
             if (!selectedCard.GetComponent<Card>().selectLogged)
             {
@@ -1020,6 +1069,28 @@ public class ExperimentManager : MonoBehaviour
                 selectedCard.GetComponent<Card>().selectLogged = true;
             }
         }
+
+        /// (OLD) click to select
+        // assign left and right controllers interaction use
+        //if (mainHandIU == null)
+        //{
+        //    if (mainHand == 0 && GameObject.Find("LeftControllerAlias") != null)
+        //        mainHandIU = GameObject.Find("LeftControllerAlias").GetComponent<VRTK_InteractUse>();
+        //    else if (mainHand == 1 && GameObject.Find("RightControllerAlias") != null)
+        //        mainHandIU = GameObject.Find("RightControllerAlias").GetComponent<VRTK_InteractUse>();
+        //}
+
+
+        //if (mainHandIU.GetUsingObject() != null)
+        //{
+        //    GameObject selectedCard = mainHandIU.GetUsingObject();
+        //    selectedCard.GetComponent<Card>().selected = true;
+        //    if (!selectedCard.GetComponent<Card>().selectLogged)
+        //    {
+        //        selectTimeLog.Add(selectTime);
+        //        selectedCard.GetComponent<Card>().selectLogged = true;
+        //    }
+        //}
 
         foreach (GameObject go in cards)
         {
@@ -1046,7 +1117,24 @@ public class ExperimentManager : MonoBehaviour
  
 
     private void ReadPatternsFromInput() {
-        string[] lines = new string[40];
+        // pattern 2
+        string[] lines = new string[10];
+
+        lines = Patterns2.text.Split(lineSeperater);
+
+        LvL2TaskList.AddRange(lines);
+
+        // shuffle order for lists
+        for (int i = 0; i < LvL2TaskList.Count; i++)
+        {
+            string temp = LvL2TaskList[i];
+            int randomIndex = Random.Range(i, LvL2TaskList.Count);
+            LvL2TaskList[i] = LvL2TaskList[randomIndex];
+            LvL2TaskList[randomIndex] = temp;
+        }
+
+        // pattern 3
+        lines = new string[40];
 
         lines = Patterns3.text.Split(lineSeperater);
 
@@ -1061,6 +1149,7 @@ public class ExperimentManager : MonoBehaviour
             LvL3TaskList[randomIndex] = temp;
         }
 
+        // pattern 5
         lines = new string[40];
 
         lines = Patterns5.text.Split(lineSeperater);
@@ -1100,7 +1189,7 @@ public class ExperimentManager : MonoBehaviour
 
             writer.WriteLine(GetFixedTime() + "," + StartSceneScript.adjustedHeight + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + StartSceneScript.ExperimentSequence + "," +
                 GetLayout() + "," + GetDifficulty() + "," + GetGameState() + "," + VectorToString(Camera.main.transform.position) + "," + VectorToString(Camera.main.transform.eulerAngles) + "," +
-                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles));
+                VectorToString(mainLogController.position) + "," + VectorToString(mainLogController.eulerAngles) + "," + GetPadPressed() + "," + GetTriggerPressed());
             writer.Flush();
         }
 
@@ -1117,7 +1206,7 @@ public class ExperimentManager : MonoBehaviour
         if (writerAnswer != null)
         {
             writerAnswer.WriteLine(StartSceneScript.ParticipantID + "," + GetTrialNumber() + "," + GetTrialID() + "," + GetLayout() + "," +
-                GetDifficulty() + "," + GetAccuracy() + "," + GetSeenTime() + "," + GetSelectTime());
+                GetDifficulty() + "," + GetAccuracy() + "," + GetShootAccuracy() + "," + GetSeenTime() + "," + GetSelectTime());
             writerAnswer.Flush();
         }
     }
@@ -1126,13 +1215,9 @@ public class ExperimentManager : MonoBehaviour
     {
         float finalTime = 0;
         if (StartSceneScript.lastTimePast != 0)
-        {
             finalTime = StartSceneScript.lastTimePast + Time.fixedTime;
-        }
         else
-        {
             finalTime = Time.fixedTime;
-        }
         return finalTime;
     }
 
@@ -1147,10 +1232,11 @@ public class ExperimentManager : MonoBehaviour
     }
 
     private string GetTrialID() {
-        if (trialNo % 6 == 1 || trialNo % 6 == 2)
+        int tmp = (trialNo - 1) % 7;
+        if (tmp == 0)
             return "Training";
         else
-            return (trialNo - (((int)((trialNo - 1) / 6)) + 1) * 2).ToString();
+            return (trialNo - (int)((trialNo - 1) / 7) - 1).ToString();
     }
 
     private string GetGameState() {
@@ -1163,6 +1249,8 @@ public class ExperimentManager : MonoBehaviour
                 return "selectCards";
             case GameState.ShowPattern:
                 return "showPattern";
+            case GameState.Distractor:
+                return "distractor";
             default:
                 return "";
         }
@@ -1170,7 +1258,7 @@ public class ExperimentManager : MonoBehaviour
 
     private string GetLayout()
     {
-        int tmp = (trialNo - 1) / 6;
+        int tmp = (trialNo - 1) / 7;
         switch (tmp)
         {
             case 0:
@@ -1188,8 +1276,10 @@ public class ExperimentManager : MonoBehaviour
 
     private string GetDifficulty()
     {
-        int tmp2 = (trialNo - 1) % 6;
-        if (tmp2 == 0 || tmp2 == 1 || tmp2 == 2 || tmp2 == 3)
+        int tmp2 = (trialNo - 1) % 7;
+        if (tmp2 == 0)
+            return "2";
+        else if (tmp2 == 1 || tmp2 == 2 || tmp2 == 3)
             return "3";
         else
             return "5";
@@ -1199,29 +1289,57 @@ public class ExperimentManager : MonoBehaviour
         return accurateNumber + "";
     }
 
+    private string GetShootAccuracy()
+    {
+        return Basket.shootCount + "";
+    }
+
     private string GetSeenTime()
     {
-        if (difficultyLevel == 3)
-        {
+        if (difficultyLevel == 2)
+            return seenTimeLog[0] + "," + seenTimeLog[1] + "," + "," + ",";
+        else if (difficultyLevel == 3)
             return seenTimeLog[0] + "," + seenTimeLog[1] + "," + seenTimeLog[2] + "," + ",";
-        }
-        else if (difficultyLevel == 5) {
+        else if (difficultyLevel == 5)
             return seenTimeLog[0] + "," + seenTimeLog[1] + "," + seenTimeLog[2] + "," + seenTimeLog[3] + "," + seenTimeLog[4];
-        }
         return "";
     }
 
     private string GetSelectTime()
     {
-        if (difficultyLevel == 3)
-        {
+        if (difficultyLevel == 2)
+            return selectTimeLog[0] + "," + selectTimeLog[1] + "," + "," + ",";
+        else if (difficultyLevel == 3)
             return selectTimeLog[0] + "," + selectTimeLog[1] + "," + selectTimeLog[2] + "," + ",";
-        }
         else if (difficultyLevel == 5)
-        {
             return selectTimeLog[0] + "," + selectTimeLog[1] + "," + selectTimeLog[2] + "," + selectTimeLog[3] + "," + selectTimeLog[4];
-        }
         return "";
+    }
+
+    private bool GetPadPressed()
+    {
+        if (mainHandCE == null)
+        {
+            mainHandCE = GameObject.Find("RightControllerAlias").GetComponent<VRTK_ControllerEvents>();
+        }
+
+        if (mainHandCE.touchpadPressed)
+            return true;
+        else
+            return false;
+    }
+
+    private bool GetTriggerPressed()
+    {
+        if (mainHandCE == null)
+        {
+            mainHandCE = GameObject.Find("RightControllerAlias").GetComponent<VRTK_ControllerEvents>();
+        }
+
+        if (mainHandCE.triggerClicked)
+            return true;
+        else
+            return false;
     }
 
     string VectorToString(Vector3 v)
