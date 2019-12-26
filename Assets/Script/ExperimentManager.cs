@@ -41,6 +41,8 @@ public class ExperimentManager : MonoBehaviour
     public Transform EdgeIndicator;
     public Transform Hoop;
     public Transform Ball;
+    public AudioClip TimesUp;
+
     [Header("Task File")]
     public TextAsset Patterns2;
     public TextAsset Patterns3;
@@ -97,6 +99,7 @@ public class ExperimentManager : MonoBehaviour
     private bool showingPattern = false; // show pattern stage
     private bool startCount = false; // show pattern stage
     private bool allSeen = false;
+    private bool soundPlayed = false;
     [HideInInspector]
     private float scanTime = 0;
     private bool allSelected = false;
@@ -321,6 +324,7 @@ public class ExperimentManager : MonoBehaviour
 
         allSeen = false;
         allSelected = false;
+        soundPlayed = false;
 
         scanTime = 0f;
         selectTime = 0f;
@@ -524,6 +528,7 @@ public class ExperimentManager : MonoBehaviour
             if (Camera.main.transform.position.x < 0.2f && Camera.main.transform.position.x > -0.2f && Camera.main.transform.position.z < 0.2f &&
                Camera.main.transform.position.z > -0.2f && ((Camera.main.transform.localEulerAngles.y < 20 && Camera.main.transform.localEulerAngles.y > 0) || (Camera.main.transform.localEulerAngles.y < 360 && Camera.main.transform.localEulerAngles.y > 340)))
             {
+                soundPlayed = false;
                 // show hoop and ball
                 Hoop.gameObject.SetActive(true);
                 Ball.gameObject.SetActive(true);
@@ -569,6 +574,7 @@ public class ExperimentManager : MonoBehaviour
                 if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
                     FilterCube.gameObject.SetActive(true);
 
+                soundPlayed = false;
                 HidePattern(false);
             }
             else
@@ -585,8 +591,13 @@ public class ExperimentManager : MonoBehaviour
 
         PrintTextToScreen(TimerText, "Time Left: " + localDistractorTime.ToString("##.00") + "s");
 
-        if (localDistractorTime < 3f)
+        if (localDistractorTime < 3f) {
+            if (!soundPlayed) {
+                AudioSource.PlayClipAtPoint(TimesUp, transform.position);
+                soundPlayed = true;
+            }
             TimerText.color = Color.red;
+        } 
         else
             TimerText.color = Color.green;
 
@@ -928,8 +939,14 @@ public class ExperimentManager : MonoBehaviour
         
         PrintTextToScreen(TimerText, "Time Left: " + LocalMemoryTime.ToString("##.00") + "s");
 
-        if (LocalMemoryTime < 3f)
+        if (LocalMemoryTime < 3f) {
+            if (!soundPlayed)
+            {
+                AudioSource.PlayClipAtPoint(TimesUp, transform.position);
+                soundPlayed = true;
+            }
             TimerText.color = Color.red;
+        } 
         else
             TimerText.color = Color.green;
 

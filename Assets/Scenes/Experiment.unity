@@ -1127,6 +1127,7 @@ MonoBehaviour:
   EdgeIndicator: {fileID: 1352959388}
   Hoop: {fileID: 580977079}
   Ball: {fileID: 1610441414}
+  TimesUp: {fileID: 8300000, guid: af03294447612544e96e620ea620323e, type: 3}
   Patterns2: {fileID: 4900000, guid: ae063c2a19a69384d932348d925571d3, type: 3}
   Patterns3: {fileID: 4900000, guid: cffbf70892a73a744bcb52137a659b93, type: 3}
   Patterns5: {fileID: 4900000, guid: 02fdf202c02ffc34c98970c60d10c908, type: 3}
