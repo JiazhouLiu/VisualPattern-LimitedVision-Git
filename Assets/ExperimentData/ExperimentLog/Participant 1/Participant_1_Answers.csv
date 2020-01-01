@@ -1,3 +1,0 @@
-ParticipantID,TrialNo,TrialID,Layout,Difficulty,AnswerAccuracy,ShootAccuracy,Card1SeenTime,Card2SeenTime,Card3SeenTime,Card4SeenTime,Card5SeenTime,Card1SelectTime,Card2SelectTime,Card3SelectTime,Card4SelectTime,Card5SelectTime
-1,1,Training,Flat,2,0,0,0.01112957,2.510003,,,,1.909336,5.930702,,,
-1,1,Training,Flat,2,0,0,0.6762182,1.998455,,,,1.177122,5.297461,,,

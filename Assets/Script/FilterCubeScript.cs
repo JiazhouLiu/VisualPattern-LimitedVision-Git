@@ -36,17 +36,20 @@ public class FilterCubeScript : MonoBehaviour
         transform.position = Camera.main.transform.position;
         transform.position = new Vector3(transform.position.x, (StartSceneScript.adjustedHeight + 1.25f) / 2 - 0.05f, transform.position.z);
 
-        if (manager.GetComponent<ExperimentManager>().layout != oldLayout) {
-            oldLayout = manager.GetComponent<ExperimentManager>().layout;
-        }
+        if (manager != null) {
+            if (manager.GetComponent<ExperimentManager>().layout != oldLayout)
+            {
+                oldLayout = manager.GetComponent<ExperimentManager>().layout;
+            }
 
-        if (oldLayout == Layout.LimitedFlat)
-        {
-            transform.eulerAngles = new Vector3(0, 0, 0);
-        }
-        else
-        {
-            transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+            if (oldLayout == Layout.LimitedFlat)
+            {
+                transform.eulerAngles = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+            }
         }
     }
 }

@@ -293,7 +293,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
 --- !u!1 &351643863 stripped
 GameObject:
@@ -621,7 +621,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &559999959
 MonoBehaviour:
@@ -643,7 +643,7 @@ MonoBehaviour:
   Cards: {fileID: 380972715}
   FilterCube: {fileID: 502687354}
   ExperimentID: 1
-  TrialNumber: 1
+  TrialNumber: 0
 --- !u!1001 &877652327
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2019,7 +2019,7 @@ PrefabInstance:
     - target: {fileID: 5482686452551469211, guid: a58b43788b50d1449a50308a084f0161,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5482686452551469211, guid: a58b43788b50d1449a50308a084f0161,
         type: 3}
