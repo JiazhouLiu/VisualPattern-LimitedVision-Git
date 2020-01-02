@@ -187,6 +187,7 @@ public class StartSceneScript : MonoBehaviour
                             if (!showPatternFlag)
                             {
                                 Cards.position = new Vector3(0, Camera.main.transform.position.y, 0);
+                                Hoop.position = new Vector3(-0.5f, Camera.main.transform.position.y + 1, 1.29f);
 
                                 // flip to the front
                                 foreach (GameObject card in cardLists)

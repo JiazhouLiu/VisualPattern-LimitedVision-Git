@@ -157,6 +157,7 @@ public class ExperimentManager : MonoBehaviour
 
         // setup adjusted height
         adjustedHeight = StartSceneScript.adjustedHeight;
+        Hoop.position = new Vector3(-0.5f, adjustedHeight + 1, 1.29f);
 
         // setup experimentSequence
         experimentSequence = StartSceneScript.ExperimentSequence;
