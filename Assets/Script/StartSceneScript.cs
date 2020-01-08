@@ -22,9 +22,12 @@ public class StartSceneScript : MonoBehaviour
     public int trainingCount = 0; // 0: Space, 1: Card, 2: Basketball 3: GO TO Experiment
 
     public Text instruction;
+    public Text instruction2;
+    public Transform FootPrint;
     public TextMeshProUGUI trackPadText;
 
     public Transform Hoop;
+    public Transform Stand;
     public Transform Ball;
     public Transform Cards;
     public Transform FilterCube;
@@ -65,23 +68,38 @@ public class StartSceneScript : MonoBehaviour
         {
             ParticipantID = ExperimentID;
 
-            switch (ExperimentID % 4)
+            switch (ExperimentID % 2)
             {
                 case 1:
                     ExperimentSequence = 1;
                     break;
-                case 2:
-                    ExperimentSequence = 2;
-                    break;
-                case 3:
-                    ExperimentSequence = 3;
-                    break;
                 case 0:
-                    ExperimentSequence = 4;
+                    ExperimentSequence = 2;
                     break;
                 default:
                     break;
             }
+
+            // old conditions
+            //switch (ExperimentID % 4)
+            //{
+            //    case 1:
+            //        ExperimentSequence = 1;
+            //        break;
+            //    case 2:
+            //        ExperimentSequence = 2;
+            //        break;
+            //    case 3:
+            //        ExperimentSequence = 3;
+            //        break;
+            //    case 0:
+            //        ExperimentSequence = 4;
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+
         }
         else
         { // testing stream
@@ -107,6 +125,12 @@ public class StartSceneScript : MonoBehaviour
             writer.WriteLine("TimeSinceStart,TrialNo,TrialID,ParticipantID,ExperimentSequence,Layout,Difficulty,TrialState,CameraPosition.x," +
                 "CameraPosition.y,CameraPosition.z,CameraEulerAngles.x,CameraEulerAngles.y,CameraEulerAngles.z,MainControllerPosition.x,MainControllerPosition.y," +
                 "MainControllerPosition.z,MainControllerEulerAngles.x,MainControllerEulerAngles.y,MainControllerEulerAngles.z");
+            writer.Close();
+
+            // interaction log
+            string writerInteractionFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + ParticipantID + "/Participant_" + ParticipantID + "_Interaction.csv";
+            writer = new StreamWriter(writerInteractionFilePath, false);
+            writer.WriteLine("TimeSinceStart,TrialNo,TrialID,ParticipantID,Layout,Info,CardSeen,CardSelected,CardAnswered");
             writer.Close();
 
             // Answers data log
@@ -149,6 +173,9 @@ public class StartSceneScript : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown("b"))
+            trainingCount--;
+
         if (SceneManager.GetActiveScene().name == "StartScene")
         {
             if (TrialNumber == 0)
@@ -158,9 +185,8 @@ public class StartSceneScript : MonoBehaviour
                     switch (trainingCount)
                     {
                         case 0:
-                            instruction.text = "The place inside walls is safe to move around.\n\n" +
-                                "Now, please move to the edges of the room and return to the original point. " +
-                                "Press <color=green>Next</color> button to see the next instruction.";
+                            instruction.text = "Explore the space.";
+                            instruction2.text = "Explore the space.";
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
                             if (!rightCE.touchpadPressed && touchPadPressed)
@@ -170,9 +196,9 @@ public class StartSceneScript : MonoBehaviour
                             }
                             break;
                         case 1:
-                            instruction.text = "The main task is to remember the patterns (white cards) on 3 * 12 card matrix with different layouts. " +
-                                "There are three phases in the experiment: acquisition, play and retrieval.\n\n " +
-                                "Press <color=green>Next</color> button to see the next instruction.";
+                            Cards.gameObject.SetActive(false);
+                            instruction.text = "Three phases in the experiment.";
+                            instruction2.text = "Three phases in the experiment.";
 
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
@@ -187,7 +213,7 @@ public class StartSceneScript : MonoBehaviour
                             if (!showPatternFlag)
                             {
                                 Cards.position = new Vector3(0, Camera.main.transform.position.y, 0);
-                                Hoop.position = new Vector3(-0.5f, Camera.main.transform.position.y + 1, 1.29f);
+                                adjustedHeight = Camera.main.transform.position.y - 0.75f;
 
                                 // flip to the front
                                 foreach (GameObject card in cardLists)
@@ -201,33 +227,32 @@ public class StartSceneScript : MonoBehaviour
                             CheckFilledScanned();
                             CheckEverythingSelected();
 
-                            instruction.text = "During the acquisition phases, " +
-                                "you need to see all the white cards (border turns yellow) and use the controller to touch them (border turns blue). " +
-                                "Green borders means you've done both. " +
-                                "In order to proceed, you have to let all whites have green borders in 15 seconds. \n\n" +
-                                "Now, please touch the cards around you. " +
-                                "Press <color=green>Next</color> button to see the next instruction.";
+                            instruction.text = "Acquisition phase: " +
+                                "<color=yellow>See all the white cards</color> and then <color=green>use the controller to touch them</color>.\n" +
+                                "During the experiment, you have 15 seconds to do so. ";
+                            instruction2.text = "Acquisition: \n" +
+                                "<color=yellow>See all the white cards</color> and then <color=green>use the controller to touch them</color>.\n" +
+                                "During the experiment, you have 15 seconds to do so.";
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
                             if (!rightCE.touchpadPressed && touchPadPressed)
                             {
-                                trainingCount = 3;
-                                touchPadPressed = false;
-                            }
-                            break;
-                        case 3:
-                            FilterCube.gameObject.SetActive(true);
-
-                            instruction.text = "In some cases, you'll have a black curtain around you to limit your vision. \n\n" +
-                                "Press <color=green>Next</color> button to see the next instruction.";
-                            if (rightCE.touchpadPressed)
-                                touchPadPressed = true;
-                            if (!rightCE.touchpadPressed && touchPadPressed)
-                            {
+                                //trainingCount = 3;
                                 trainingCount = 4;
                                 touchPadPressed = false;
                             }
                             break;
+                        //case 3:
+                        //    FilterCube.gameObject.SetActive(true);
+
+                        //    if (rightCE.touchpadPressed)
+                        //        touchPadPressed = true;
+                        //    if (!rightCE.touchpadPressed && touchPadPressed)
+                        //    {
+                        //        trainingCount = 4;
+                        //        touchPadPressed = false;
+                        //    }
+                        //    break;
                         case 4:
                             // reset card property
 
@@ -252,15 +277,18 @@ public class StartSceneScript : MonoBehaviour
                             }
 
                             Cards.gameObject.SetActive(false);
-                            FilterCube.gameObject.SetActive(false);
+                            //FilterCube.gameObject.SetActive(false);
 
-                            instruction.text = "During the play phase, you have 15 seconds to play the basketball game. " +
-                                "Use <color=red>Trigger</color> button to grab the ball and throw it into the basket. " +
-                                "We'll record your score at the end and a $50 prize will be given to the best player.\n\n" +
-                                "Now, please get familiar with the game. Press <color=green>Next</color> button to see the next instruction.";
+                            instruction.text = "Play phase: " +
+                                "Play a basketball game in 15 seconds.";
+                            instruction2.text = "Play:\n" +
+                                "Play a basketball game in 15 seconds.";
 
                             if (!Hoop.gameObject.activeSelf)
                                 Hoop.gameObject.SetActive(true);
+                            
+                            if (!Stand.gameObject.activeSelf)
+                                Stand.gameObject.SetActive(true);
 
                             if (!Ball.gameObject.activeSelf)
                                 Ball.gameObject.SetActive(true);
@@ -275,9 +303,13 @@ public class StartSceneScript : MonoBehaviour
                             break;
                         case 5:
                             Cards.gameObject.SetActive(true);
+                            FootPrint.gameObject.SetActive(false);
 
                             if (Hoop.gameObject.activeSelf)
                                 Hoop.gameObject.SetActive(false);
+
+                            if (Stand.gameObject.activeSelf)
+                                Stand.gameObject.SetActive(false);
 
                             if (Ball.gameObject.activeSelf)
                                 Ball.gameObject.SetActive(false);
@@ -301,11 +333,11 @@ public class StartSceneScript : MonoBehaviour
                                 }
                             }
 
-                            instruction.text = "During the retrieval phase, you need to select the white cards as the pattern. " +
-                                "You cannot undo the selection. Your selection has a limit same as the white card number. " +
-                                "You will be given the result of your selection at the end. \n\n" +
-                                "Now, please touch the cards around you to select the cards. " +
-                                "Press <color=green>Next</color> button to see the next instruction.";
+                            instruction.text = "Retrieval phase:\n" +
+                                "Select the white cards you remembered. No undo allowed. And you will see the result when you finish.";
+                            instruction2.text = "Retrieval:\n" +
+                               "Select the white cards you remembered. No undo allowed. And you will see the result when you finish.";
+
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
                             if (!rightCE.touchpadPressed && touchPadPressed)
@@ -314,19 +346,36 @@ public class StartSceneScript : MonoBehaviour
                                 touchPadPressed = false;
                             }
                             break;
-
                         case 6:
-                            trackPadText.text = "Start";
-                            instruction.text = "Now, please stand still and press the <color=green>Start</color> button to start the experiment.";
+                            instruction.text = "Note: when you see the image below, go back to the orignal position.";
+                            instruction2.text = "Note: when you see the image below, go back to the orignal position.";
+
+                            FootPrint.gameObject.SetActive(true);
+                            Cards.gameObject.SetActive(false);
+
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
                             if (!rightCE.touchpadPressed && touchPadPressed)
                             {
                                 trainingCount = 7;
+                                FootPrint.gameObject.SetActive(false);
                                 touchPadPressed = false;
                             }
                             break;
                         case 7:
+                            trackPadText.text = "Start";
+                            instruction.text = "Now, please stand still and press the <color=green>Start</color> button to start the experiment.";
+                            instruction2.text = "Now, please stand still and press the <color=green>Start</color> button to start the experiment.";
+
+                            if (rightCE.touchpadPressed)
+                                touchPadPressed = true;
+                            if (!rightCE.touchpadPressed && touchPadPressed)
+                            {
+                                trainingCount = 8;
+                                touchPadPressed = false;
+                            }
+                            break;
+                        case 8:
                             if (Camera.main != null)
                                 adjustedHeight = Camera.main.transform.position.y - 0.75f;
                             SceneManager.LoadScene("Experiment", LoadSceneMode.Single);

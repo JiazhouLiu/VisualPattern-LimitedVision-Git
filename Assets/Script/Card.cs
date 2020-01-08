@@ -95,6 +95,12 @@ public class Card : MonoBehaviour
                         t.GetComponent<Image>().color = Color.green;
                     }
                 }
+                else if (filled && !seen && !selected) {
+                    foreach (Transform t in borders)
+                    {
+                        t.GetComponent<Image>().color = Color.white;
+                    }
+                }
             }
             else
             {
@@ -103,6 +109,13 @@ public class Card : MonoBehaviour
                     t.GetComponent<Image>().color = Color.white;
                 }
             }
+        }
+    }
+
+    public void ResetBorderColor() {
+        foreach (Transform t in borders)
+        {
+            t.GetComponent<Image>().color = Color.white;
         }
     }
 }

@@ -5,8 +5,7 @@ using VRTK.GrabAttachMechanics;
 
 public class Basket : MonoBehaviour
 {
-    public AudioClip Applaud;
-    public AudioClip Tease;
+    //public AudioClip Applaud;
     public Transform Ball;
     public Transform Stand;
     public bool Distractor = false;
@@ -15,6 +14,24 @@ public class Basket : MonoBehaviour
     private bool scored = false;
     private bool overHoop = false;
     public static int shootCount = 0;
+    private float headToChest = 0.8f;
+    private float delta = 0.75f;
+    private float ballDelta = 0.144f;
+
+    private ExperimentManager em;
+
+    private void Start()
+    {
+        if (GameObject.Find("ExperimentManager") != null)
+        {
+            em = GameObject.Find("ExperimentManager").GetComponent<ExperimentManager>();
+        }
+
+        Stand.position = new Vector3(0, (StartSceneScript.adjustedHeight + delta - headToChest) / 2, 0.5f);
+        Stand.localScale = new Vector3(0.3f, StartSceneScript.adjustedHeight + delta - headToChest, 0.3f);
+        Ball.position = new Vector3(0, StartSceneScript.adjustedHeight + delta - headToChest + ballDelta, 0.5f);
+        transform.position = new Vector3(-0.5f, StartSceneScript.adjustedHeight + 1 + delta, 1.29f);
+    }
 
     private void Update()
     {
@@ -25,10 +42,10 @@ public class Basket : MonoBehaviour
 
         if (!played)
         {
-            if (Ball.position.y > 3f)
+            if (Ball.position.y > StartSceneScript.adjustedHeight + 1 + delta + 0.2f)
                 overHoop = true;
 
-            if (Ball.position.y > 1.2f)
+            if (Ball.position.y > StartSceneScript.adjustedHeight + delta - headToChest + 0.15f)
                 Stand.gameObject.SetActive(false);
 
             if (Ball.position.y < 0.2f)
@@ -44,23 +61,16 @@ public class Basket : MonoBehaviour
         // reset ball position
         if (Ball.gameObject.activeSelf)
         {
-            Ball.transform.position = new Vector3(0, 1.144f, 0.5f);
+            Ball.position = new Vector3(0, StartSceneScript.adjustedHeight + delta - headToChest + ballDelta, 0.5f);
             Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
             Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
             played = false;
             overHoop = false;
 
-            if (!scored)
-                AudioSource.PlayClipAtPoint(Tease, transform.position);
-            else
+            if (scored)
                 scored = false;
         }
-    }
-
-    void OnCollisionEnter()
-    {
-        //GetComponent<AudioSource>().Play();
     }
 
     void OnTriggerEnter()
@@ -68,7 +78,12 @@ public class Basket : MonoBehaviour
         if (!scored && overHoop) {
             scored = true;
             shootCount++;
-            AudioSource.PlayClipAtPoint(Applaud, transform.position);
+
+            if (em != null) {
+                em.WriteInteractionToLog("Bingo");
+                em.shootTotalNumber++;
+            }
+            //AudioSource.PlayClipAtPoint(Applaud, transform.position);
         }
     }
 

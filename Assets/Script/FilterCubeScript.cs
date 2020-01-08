@@ -14,7 +14,7 @@ public class FilterCubeScript : MonoBehaviour
 
     private void Start()
     {
-        transform.localScale = new Vector3(degreeOfView * Mathf.PI * radius / 180, StartSceneScript.adjustedHeight + 1.3f, 2 * radius);
+        transform.localScale = new Vector3(degreeOfView * Mathf.PI * radius / 180, StartSceneScript.adjustedHeight + 1.5f, 2 * radius);
 
         Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
         int[] triangles = GetComponent<MeshFilter>().mesh.triangles;
@@ -34,7 +34,7 @@ public class FilterCubeScript : MonoBehaviour
     void Update()
     {
         transform.position = Camera.main.transform.position;
-        transform.position = new Vector3(transform.position.x, (StartSceneScript.adjustedHeight + 1.25f) / 2 - 0.05f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, (StartSceneScript.adjustedHeight + 1.25f) / 2, transform.position.z);
 
         if (manager != null) {
             if (manager.GetComponent<ExperimentManager>().layout != oldLayout)
