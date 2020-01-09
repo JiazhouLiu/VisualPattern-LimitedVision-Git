@@ -851,7 +851,7 @@ MonoBehaviour:
   Ball: {fileID: 1078608311}
   Cards: {fileID: 380972715}
   FilterCube: {fileID: 502687354}
-  ExperimentID: 3
+  ExperimentID: 1
   TrialNumber: 0
 --- !u!1001 &877652327
 PrefabInstance:
@@ -1755,6 +1755,10 @@ PrefabInstance:
     - target: {fileID: 1963167942611880, guid: eb6748575a8fce346b19dff6cb1471ec, type: 3}
       propertyPath: m_Name
       value: '[VRTK_SDKManager]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1963167942611880, guid: eb6748575a8fce346b19dff6cb1471ec, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4693252548441896, guid: eb6748575a8fce346b19dff6cb1471ec, type: 3}
       propertyPath: m_LocalPosition.x

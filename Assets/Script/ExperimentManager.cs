@@ -53,6 +53,7 @@ public class ExperimentManager : MonoBehaviour
     public TextAsset Patterns5;
     public TextAsset Patterns5Flat;
     public TextAsset Patterns5Circular;
+    public TextAsset Patterns5Supp;
 
     [Header("Predefined Variables")]
     public float hDelta;
@@ -102,6 +103,7 @@ public class ExperimentManager : MonoBehaviour
     private List<string> LvL5TaskList;
     private List<string> LvL5FlatTaskList;
     private List<string> LvL5CircularTaskList;
+    private List<string> LvL5SuppTaskList;
     private int[] currentPattern;
     private int[] answerPattern;
 
@@ -116,6 +118,8 @@ public class ExperimentManager : MonoBehaviour
     private float selectTime = 0;
     private int accurateNumber = 0;
     private int shootCount = 0;
+    private int trainingSuppCount = 0;
+    private bool failedTraining = false;
 
     // check on update for interaction
     private bool localTouchpadPressed = false;
@@ -152,6 +156,7 @@ public class ExperimentManager : MonoBehaviour
         LvL5TaskList = new List<string>();
         LvL5FlatTaskList = new List<string>();
         LvL5CircularTaskList = new List<string>();
+        LvL5SuppTaskList = new List<string>();
 
         seenTimeLog = new List<float>();
         selectTimeLog = new List<float>();
@@ -288,7 +293,10 @@ public class ExperimentManager : MonoBehaviour
                             {
                                 LeftControllerText.text = "Start";
                                 RightControllerText.text = "Start";
-                                PrepareExperiment();
+                                if (failedTraining)
+                                    PlaySuppTrial();
+                                else
+                                    PrepareExperiment();
                             }
                             else
                             {
@@ -302,7 +310,7 @@ public class ExperimentManager : MonoBehaviour
                             LeftControllerText.text = "Start";
                             RightControllerText.text = "Start";
                             Instruction.text = "Break";
-                           PrepareExperiment();
+                            PrepareExperiment();
                             break;
                         default:
                             break;
@@ -310,6 +318,60 @@ public class ExperimentManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void PlaySuppTrial() {
+
+        trainingSuppCount++;
+
+        gameState = GameState.Prepare;
+        LocalMemoryTime = memoryTime;
+        localDistractorTime = distractorTime;
+
+        WriteInteractionToLog("Prepare");
+
+        if (GetTrialID() == "Training")
+            Instruction.text = "Training Task: " + ((trialNo % 10) + trainingSuppCount);
+        else
+            Instruction.text = "Experiment Task: " + ((trialNo - 2) % 10) + " / 8";
+        FootPrint.gameObject.SetActive(true);
+
+        if (cards != null)
+        {
+            foreach (GameObject go in cards)
+                Destroy(go);
+            cards.Clear();
+
+            foreach (GameObject go in selectedCards)
+                Destroy(go);
+            selectedCards.Clear();
+        }
+
+        allSeen = false;
+        allSelected = false;
+        soundPlayed = false;
+
+        scanTime = 0f;
+        selectTime = 0f;
+        shootCount = 0;
+
+        seenTimeLog.Clear();
+        selectTimeLog.Clear();
+
+        cards = GenerateCards();
+
+        failedTraining = false;
+
+        SetCardsPositions(cards, layout);
+
+        LeftControllerText.text = "Start";
+        RightControllerText.text = "Start";
+
+        foreach (GameObject card in cards)
+        {
+            card.SetActive(false);
+        }
+        EdgeIndicator.gameObject.SetActive(false);
     }
 
     // Prepare stage (after clicking ready button)
@@ -332,9 +394,9 @@ public class ExperimentManager : MonoBehaviour
         //if (correctTrial)
         //{
             if (GetTrialID() == "Training")
-                Instruction.text = "Training Task: " + (trialNo % 10);
+                Instruction.text = "Training Task: " + ((trialNo % 10) + trainingSuppCount);
             else
-                Instruction.text = "Experiment Task: " + ((trialNo - 2) % 10) + " / 10";
+                Instruction.text = "Experiment Task: " + ((trialNo - 2) % 10) + " / 8";
             FootPrint.gameObject.SetActive(true);
         //}
         //else
@@ -383,6 +445,7 @@ public class ExperimentManager : MonoBehaviour
         {
             card.SetActive(false);
         }
+        EdgeIndicator.gameObject.SetActive(false);
     }
 
     // Show pattern (after clicking Start button)
@@ -393,6 +456,7 @@ public class ExperimentManager : MonoBehaviour
         {
             card.SetActive(true);
         }
+        EdgeIndicator.gameObject.SetActive(true);
 
         gameState = GameState.ShowPattern;
         showingPattern = true;
@@ -477,30 +541,61 @@ public class ExperimentManager : MonoBehaviour
             card.SetActive(false);
         }
 
-        WriteCardsLog();
-
         WriteInteractionToLog("Result");
         CheckResult();
 
-        // Write to Log
-        WriteAnswerToLog();
-
         // increase trial No
-        trialNo++;
+        if (GetTrialID() == "Training")
+        {
+            if (accurateNumber != difficultyLevel) {
+                failedTraining = true;
+                trialNo--;
+            }
+        }
+        else {
+            // Write cards log for accuracy
+            WriteCardsLog();
+            // Write to Log
+            WriteAnswerToLog();
+        }
+            trialNo++;
 
         if (trialNo > maxTrialNo) {
-            if (writer != null)
+            if (writer != null) {
                 writer.Close();
+                writer = null;
+            }
+            
             if (writerHead != null)
+            {
                 writerHead.Close();
+                writerHead = null;
+            }
+            
             if (writerAnswer != null)
+            {
                 writerAnswer.Close();
+                writerAnswer = null;
+            }
+            
             if (writerInteraction != null)
+            {
                 writerInteraction.Close();
+                writerInteraction = null;
+            }
+            
             if (writerTrialCards != null)
+            {
                 writerTrialCards.Close();
+                writerTrialCards = null;
+            }
+            
             if (writerAnswerCards != null)
+            {
                 writerAnswerCards.Close();
+                writerAnswerCards = null;
+            }
+
             QuitGame();
         }
     }
@@ -811,17 +906,16 @@ public class ExperimentManager : MonoBehaviour
             //    }
             //    return PatternID;
             //}
-
-            if (layout == Layout.Flat || layout == Layout.LimitedFlat)
+            if (failedTraining)
             {
-                if (LvL5FlatTaskList.Count > 0)
+                if (LvL5SuppTaskList.Count > 0)
                 {
                     int[] PatternID = new int[difficultyLevel];
                     string[] PatternIDString = new string[difficultyLevel];
 
-                    PatternIDString = LvL5FlatTaskList[0].Split(fieldSeperator);
+                    PatternIDString = LvL5SuppTaskList[0].Split(fieldSeperator);
 
-                    LvL5FlatTaskList.RemoveAt(0);
+                    LvL5SuppTaskList.RemoveAt(0);
 
                     for (int i = 0; i < difficultyLevel; i++)
                     {
@@ -830,24 +924,44 @@ public class ExperimentManager : MonoBehaviour
                     return PatternID;
                 }
             }
-            else if (layout == Layout.FullCircle)
-            {
-                if (LvL5CircularTaskList.Count > 0)
+            else {
+                if (layout == Layout.Flat || layout == Layout.LimitedFlat)
                 {
-                    int[] PatternID = new int[difficultyLevel];
-                    string[] PatternIDString = new string[difficultyLevel];
-
-                    PatternIDString = LvL5CircularTaskList[0].Split(fieldSeperator);
-
-                    LvL5CircularTaskList.RemoveAt(0);
-
-                    for (int i = 0; i < difficultyLevel; i++)
+                    if (LvL5FlatTaskList.Count > 0)
                     {
-                        PatternID[i] = int.Parse(PatternIDString[i]);
+                        int[] PatternID = new int[difficultyLevel];
+                        string[] PatternIDString = new string[difficultyLevel];
+
+                        PatternIDString = LvL5FlatTaskList[0].Split(fieldSeperator);
+
+                        LvL5FlatTaskList.RemoveAt(0);
+
+                        for (int i = 0; i < difficultyLevel; i++)
+                        {
+                            PatternID[i] = int.Parse(PatternIDString[i]);
+                        }
+                        return PatternID;
                     }
-                    return PatternID;
                 }
-            }
+                else if (layout == Layout.FullCircle)
+                {
+                    if (LvL5CircularTaskList.Count > 0)
+                    {
+                        int[] PatternID = new int[difficultyLevel];
+                        string[] PatternIDString = new string[difficultyLevel];
+
+                        PatternIDString = LvL5CircularTaskList[0].Split(fieldSeperator);
+
+                        LvL5CircularTaskList.RemoveAt(0);
+
+                        for (int i = 0; i < difficultyLevel; i++)
+                        {
+                            PatternID[i] = int.Parse(PatternIDString[i]);
+                        }
+                        return PatternID;
+                    }
+                }
+            } 
         }
         return null;
     }
@@ -1292,10 +1406,11 @@ public class ExperimentManager : MonoBehaviour
         lines = new string[20];
         lines = Patterns5Circular.text.Split(lineSeperater);
         LvL5CircularTaskList.AddRange(lines);
-    }
 
-    private void PrintToWall(string text) {
-
+        // supplementary pattern 5 flat
+        lines = new string[20];
+        lines = Patterns5Supp.text.Split(lineSeperater);
+        LvL5SuppTaskList.AddRange(lines);
     }
 
     /// Log related functions START

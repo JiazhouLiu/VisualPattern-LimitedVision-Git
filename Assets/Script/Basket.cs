@@ -45,7 +45,7 @@ public class Basket : MonoBehaviour
             if (Ball.position.y > StartSceneScript.adjustedHeight + 1 + delta + 0.2f)
                 overHoop = true;
 
-            if (Ball.position.y > StartSceneScript.adjustedHeight + delta - headToChest + 0.15f)
+            if (Ball.position.y > StartSceneScript.adjustedHeight + delta - headToChest + 0.3f)
                 Stand.gameObject.SetActive(false);
 
             if (Ball.position.y < 0.2f)

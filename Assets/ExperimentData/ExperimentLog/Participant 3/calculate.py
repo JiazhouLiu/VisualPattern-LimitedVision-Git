@@ -32,7 +32,10 @@ for aList in list(trialList):
       matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a/r) - int(b/r)) + abs(a%r - b%r))
   result.append(min([sum([matrix[p[0]][p[1]] for p in enumerate(perm)]) for perm in itertools.permutations(range(len(matrix)))]))
 
+resultString = ""
+for a in list(result):
+  resultString += str(a) + "\n"
 
-f = open("result.txt", "w")
-f.write(str(result))
+f = open("result.csv", "w")
+f.write(resultString)
 f.close()

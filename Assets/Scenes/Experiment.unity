@@ -1196,6 +1196,7 @@ MonoBehaviour:
   Patterns5: {fileID: 4900000, guid: 5509d279b463db64b89f8e512ad258f1, type: 3}
   Patterns5Flat: {fileID: 4900000, guid: 5509d279b463db64b89f8e512ad258f1, type: 3}
   Patterns5Circular: {fileID: 4900000, guid: a99e1e52afefbfa4baf6f45f075cc9b7, type: 3}
+  Patterns5Supp: {fileID: 4900000, guid: 18ac80786f2f5654d85fac939a3dd240, type: 3}
   hDelta: 0.5
   vDelta: 0.5
   cardSize: 0.4

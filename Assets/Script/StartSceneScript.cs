@@ -191,23 +191,23 @@ public class StartSceneScript : MonoBehaviour
                                 touchPadPressed = true;
                             if (!rightCE.touchpadPressed && touchPadPressed)
                             {
-                                trainingCount = 1;
-                                touchPadPressed = false;
-                            }
-                            break;
-                        case 1:
-                            Cards.gameObject.SetActive(false);
-                            instruction.text = "Three phases in the experiment.";
-                            instruction2.text = "Three phases in the experiment.";
-
-                            if (rightCE.touchpadPressed)
-                                touchPadPressed = true;
-                            if (!rightCE.touchpadPressed && touchPadPressed)
-                            {
                                 trainingCount = 2;
                                 touchPadPressed = false;
                             }
                             break;
+                        //case 1:
+                        //    Cards.gameObject.SetActive(false);
+                        //    instruction.text = "Three phases in the experiment.";
+                        //    instruction2.text = "Three phases in the experiment.";
+
+                        //    if (rightCE.touchpadPressed)
+                        //        touchPadPressed = true;
+                        //    if (!rightCE.touchpadPressed && touchPadPressed)
+                        //    {
+                        //        trainingCount = 2;
+                        //        touchPadPressed = false;
+                        //    }
+                        //    break;
                         case 2:
                             Cards.gameObject.SetActive(true);
                             if (!showPatternFlag)
@@ -227,12 +227,8 @@ public class StartSceneScript : MonoBehaviour
                             CheckFilledScanned();
                             CheckEverythingSelected();
 
-                            instruction.text = "Acquisition phase: " +
-                                "<color=yellow>See all the white cards</color> and then <color=green>use the controller to touch them</color>.\n" +
-                                "During the experiment, you have 15 seconds to do so. ";
-                            instruction2.text = "Acquisition: \n" +
-                                "<color=yellow>See all the white cards</color> and then <color=green>use the controller to touch them</color>.\n" +
-                                "During the experiment, you have 15 seconds to do so.";
+                            instruction.text = "Acquisition phase";
+                            instruction2.text = "Acquisition phase";
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
                             if (!rightCE.touchpadPressed && touchPadPressed)
@@ -279,10 +275,8 @@ public class StartSceneScript : MonoBehaviour
                             Cards.gameObject.SetActive(false);
                             //FilterCube.gameObject.SetActive(false);
 
-                            instruction.text = "Play phase: " +
-                                "Play a basketball game in 15 seconds.";
-                            instruction2.text = "Play:\n" +
-                                "Play a basketball game in 15 seconds.";
+                            instruction.text = "Play phase";
+                            instruction2.text = "Play phase";
 
                             if (!Hoop.gameObject.activeSelf)
                                 Hoop.gameObject.SetActive(true);
@@ -333,10 +327,8 @@ public class StartSceneScript : MonoBehaviour
                                 }
                             }
 
-                            instruction.text = "Retrieval phase:\n" +
-                                "Select the white cards you remembered. No undo allowed. And you will see the result when you finish.";
-                            instruction2.text = "Retrieval:\n" +
-                               "Select the white cards you remembered. No undo allowed. And you will see the result when you finish.";
+                            instruction.text = "Retrieval phase";
+                            instruction2.text = "Retrieval phase";
 
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
@@ -347,8 +339,8 @@ public class StartSceneScript : MonoBehaviour
                             }
                             break;
                         case 6:
-                            instruction.text = "Note: when you see the image below, go back to the orignal position.";
-                            instruction2.text = "Note: when you see the image below, go back to the orignal position.";
+                            instruction.text = "Note: when you see the image below, go back to the original position.";
+                            instruction2.text = "Note: when you see the image below, go back to the original position.";
 
                             FootPrint.gameObject.SetActive(true);
                             Cards.gameObject.SetActive(false);

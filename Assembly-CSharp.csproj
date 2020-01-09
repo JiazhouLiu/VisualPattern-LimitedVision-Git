@@ -69,10 +69,8 @@
     <Compile Include="Assets\Script\ExperimentManager.cs" />
     <Compile Include="Assets\Script\FilterCubeScript.cs" />
     <Compile Include="Assets\Script\StartSceneScript.cs" />
-    <None Include="Assets\ExperimentData\ExperimentLog\Participant 1\result.txt" />
-    <None Include="Assets\ExperimentData\ExperimentLog\Participant 0\PlaceHolder.txt" />
+    <None Include="Assets\ExperimentData\ExperimentLog\Pilot\2nd round\Joe2result.txt" />
     <None Include="Assets\Resources\Shader\DoubleSided.shader" />
-    <None Include="Assets\ExperimentData\ExperimentLog\Pilot\result.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/Joe Liu/Documents/Joe/Unity/VisualPattern-LimitedVision-Git/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
