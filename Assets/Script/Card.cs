@@ -31,6 +31,7 @@ public class Card : MonoBehaviour
             transform.GetChild(0).GetChild(0).GetChild(4),
             transform.GetChild(0).GetChild(0).GetChild(5)
         };
+
     }
 
     private void Update()
@@ -38,7 +39,9 @@ public class Card : MonoBehaviour
         if (em == null)
         {
             if (GameObject.Find("FromStartScene") != null && 
-                GameObject.Find("FromStartScene").GetComponent<StartSceneScript>().trainingCount == 2)
+               (GameObject.Find("FromStartScene").GetComponent<StartSceneScript>().trainingCount == 2 ||
+                GameObject.Find("FromStartScene").GetComponent<StartSceneScript>().trainingCount == 9 ||
+                GameObject.Find("FromStartScene").GetComponent<StartSceneScript>().trainingCount == 4))
             {
                 if (filled && seen && !selected)
                 {
@@ -72,7 +75,7 @@ public class Card : MonoBehaviour
         }
         else
         {
-            if (em.gameState == GameState.ShowPattern)
+            if (em.gameState == GameState.ShowPattern || em.gameState == GameState.Distractor)
             {
                 if (filled && seen && !selected)
                 {

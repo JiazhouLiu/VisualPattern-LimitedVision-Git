@@ -1,0 +1,43 @@
+TimeSinceStart,TrialNo,TrialID,ParticipantID,Layout,Info,CardSeen,CardSelected,CardAnswered,CardPlayed
+5.197778,1,Training,1,Flat,Prepare,,,
+6.475556,1,Training,1,Flat,ShowPattern,,,
+6.497778,1,Training,1,Flat,Card,30,,,
+6.808889,1,Training,1,Flat,Card,5,,,
+7.275556,1,Training,1,Flat,Card,1,,,
+7.275556,1,Training,1,Flat,Card,26,,,
+8.642222,1,Training,1,Flat,Card,,26,,
+9.22,1,Training,1,Flat,Card,,1,,
+10.69778,1,Training,1,Flat,Card,,5,,
+11.30889,1,Training,1,Flat,Card,,30,,
+11.44222,1,Training,1,Flat,Card,23,,,
+13.66444,1,Training,1,Flat,Card,,23,,
+21.43111,1,Training,1,Flat,Distractor,,,
+21.43111,1,Training,1,Flat,Task: 2,,,
+22.83111,1,Training,1,Flat,CardGame,,,,2
+22.83111,1,Training,1,Flat,Task: 2,,,
+25.22,1,Training,1,Flat,CardGame,,,,2
+25.22,1,Training,1,Flat,Task: 6,,,
+26.95333,1,Training,1,Flat,CardGame,,,,6
+26.95333,1,Training,1,Flat,Task: 1,,,
+28.43111,1,Training,1,Flat,CardGame,,,,1
+28.43111,1,Training,1,Flat,Task: 6,,,
+30.97556,1,Training,1,Flat,CardGame,,,,6
+30.97556,1,Training,1,Flat,Task: 5,,,
+31.75333,1,Training,1,Flat,CardGame,,,,8
+31.75333,1,Training,1,Flat,Task: 7,,,
+33.19778,1,Training,1,Flat,CardGame,,,,7
+33.19778,1,Training,1,Flat,Task: 5,,,
+34.43111,1,Training,1,Flat,CardGame,,,,5
+34.43111,1,Training,1,Flat,Task: 6,,,
+36.46445,1,Training,1,Flat,CardGame,,,,6
+36.46445,1,Training,1,Flat,Task: 7,,,
+37.75333,1,Training,1,Flat,CardGame,,,,7
+37.75333,1,Training,1,Flat,Task: 4,,,
+39.09778,1,Training,1,Flat,CardGame,,,,4
+39.09778,1,Training,1,Flat,Task: 6,,,
+40.37556,1,Training,1,Flat,SelectedCards,,,
+42.34222,1,Training,1,Flat,Card,,,5,
+42.40889,1,Training,1,Flat,Card,,,6,
+42.55333,1,Training,1,Flat,Card,,,18,
+42.72,1,Training,1,Flat,Card,,,30,
+42.83111,1,Training,1,Flat,Card,,,29,

@@ -1,0 +1,622 @@
+TimeSinceStart,TrialNo,TrialID,ParticipantID,Layout,Info,CardSeen,CardSelected,CardAnswered
+97.58667,1,Training,3,Flat,Prepare,,,
+100.8644,1,Training,3,Flat,ShowPattern,,,
+100.8867,1,Training,3,Flat,Card,5,,
+101.8533,1,Training,3,Flat,Card,30,,
+102.4978,1,Training,3,Flat,Card,26,,
+102.6089,1,Training,3,Flat,Card,1,,
+104.9644,1,Training,3,Flat,Card,23,,
+111.1089,1,Training,3,Flat,Card,,1,
+113.0089,1,Training,3,Flat,Card,,26,
+117.1311,1,Training,3,Flat,Card,,5,
+118.8867,1,Training,3,Flat,Card,,30,
+122.5089,1,Training,3,Flat,Card,,23,
+122.5089,1,Training,3,Flat,Distractor,,,
+140.5978,1,Training,3,Flat,SelectedCards,,,
+147.32,1,Training,3,Flat,Card,,,1
+149.0978,1,Training,3,Flat,Card,,,26
+156.3867,1,Training,3,Flat,Card,,,6
+158.1089,1,Training,3,Flat,Card,,,31
+160.6311,1,Training,3,Flat,Card,,,23
+166.2089,1,Training,3,Flat,Result,,,
+170.2422,1,Training,3,Flat,Prepare,,,
+177.6422,1,Training,3,Flat,ShowPattern,,,
+177.72,1,Training,3,Flat,Card,7,,
+179.0422,1,Training,3,Flat,Card,21,,
+179.1422,1,Training,3,Flat,Card,11,,
+181.0756,1,Training,3,Flat,Card,25,,
+185.52,1,Training,3,Flat,Card,30,,
+193.1422,1,Training,3,Flat,Card,,25,
+195.4533,1,Training,3,Flat,Card,,30,
+196.3422,1,Training,3,Flat,Card,,7,
+197.72,1,Training,3,Flat,Card,,21,
+199.1867,1,Training,3,Flat,Card,,11,
+199.1867,1,Training,3,Flat,Distractor,,,
+211.8533,1,Training,3,Flat,Bingo,,,
+217.62,1,Training,3,Flat,SelectedCards,,,
+224.7533,1,Training,3,Flat,Card,,,1
+227.62,1,Training,3,Flat,Card,,,16
+229.1644,1,Training,3,Flat,Card,,,29
+230.8645,1,Training,3,Flat,Card,,,19
+232.6756,1,Training,3,Flat,Card,,,9
+241.1756,1,Training,3,Flat,Result,,,
+242.5978,1,Training,3,Flat,Prepare,,,
+243.7978,1,Training,3,Flat,ShowPattern,,,
+244.7867,1,Training,3,Flat,Card,28,,
+244.9422,1,Training,3,Flat,Card,1,,
+245.0089,1,Training,3,Flat,Card,24,,
+255.32,1,Training,3,Flat,Card,,24,
+256.2978,1,Training,3,Flat,Card,,1,
+259.6756,1,Training,3,Flat,Card,,28,
+260.0978,1,Training,3,Flat,Card,7,,
+260.1422,1,Training,3,Flat,Card,22,,
+261.7645,1,Training,3,Flat,Card,,7,
+263.1422,1,Training,3,Flat,Card,,22,
+263.1422,1,Training,3,Flat,Distractor,,,
+274.4533,1,Training,3,Flat,Bingo,,,
+277.9089,1,Training,3,Flat,Bingo,,,
+280.2978,1,Training,3,Flat,SelectedCards,,,
+287.8978,1,Training,3,Flat,Card,,,0
+292.0311,1,Training,3,Flat,Card,,,26
+297.3867,1,Training,3,Flat,Card,,,4
+301.0089,1,Training,3,Flat,Card,,,7
+303.4089,1,Training,3,Flat,Card,,,32
+304.8422,1,Training,3,Flat,Result,,,
+306.5089,1,Training,3,Flat,Prepare,,,
+310.32,1,Training,3,Flat,ShowPattern,,,
+310.3422,1,Training,3,Flat,Card,6,,
+311.4533,1,Training,3,Flat,Card,16,,
+311.62,1,Training,3,Flat,Card,13,,
+315.7867,1,Training,3,Flat,Card,34,,
+315.8422,1,Training,3,Flat,Card,11,,
+321.8311,1,Training,3,Flat,Card,,13,
+323.7756,1,Training,3,Flat,Card,,16,
+326.5978,1,Training,3,Flat,Card,,6,
+329.8978,1,Training,3,Flat,Card,,34,
+330.6534,1,Training,3,Flat,Card,,11,
+330.6534,1,Training,3,Flat,Distractor,,,
+348.52,1,Training,3,Flat,SelectedCards,,,
+352.5978,1,Training,3,Flat,Card,,,13
+354.4422,1,Training,3,Flat,Card,,,16
+362.0422,1,Training,3,Flat,Card,,,7
+365.22,1,Training,3,Flat,Card,,,32
+371.1867,1,Training,3,Flat,Card,,,35
+373.2311,1,Training,3,Flat,Result,,,
+375.2534,1,Training,3,Flat,Prepare,,,
+377.6645,1,Training,3,Flat,ShowPattern,,,
+377.6867,1,Training,3,Flat,Card,17,,
+378.7534,1,Training,3,Flat,Card,26,,
+378.7645,1,Training,3,Flat,Card,1,,
+385.02,1,Training,3,Flat,Card,32,,
+385.3089,1,Training,3,Flat,Card,22,,
+399.4178,3,1,3,Flat,Prepare,,,
+401.9955,3,1,3,Flat,ShowPattern,,,
+402.0289,3,1,3,Flat,Card,5,,
+403.2733,3,1,3,Flat,Card,26,,
+403.3178,3,1,3,Flat,Card,1,,
+407.7956,3,1,3,Flat,Card,30,,
+408.7178,3,1,3,Flat,Card,23,,
+414.4955,3,1,3,Flat,Card,,1,
+415.5733,3,1,3,Flat,Card,,26,
+418.3289,3,1,3,Flat,Card,,5,
+421.7289,3,1,3,Flat,Card,,23,
+425.9955,3,1,3,Flat,Card,,30,
+425.9955,3,1,3,Flat,Distractor,,,
+440.94,3,1,3,Flat,SelectedCards,,,
+445.1956,3,1,3,Flat,Card,,,1
+446.6622,3,1,3,Flat,Card,,,26
+453.2178,3,1,3,Flat,Card,,,6
+459.04,3,1,3,Flat,Card,,,22
+460.8733,3,1,3,Flat,Card,,,33
+463.2844,3,1,3,Flat,Result,,,
+465.3067,4,2,3,Flat,Prepare,,,
+466.4622,4,2,3,Flat,ShowPattern,,,
+466.4844,4,2,3,Flat,Card,4,,
+467.3733,4,2,3,Flat,Card,14,,
+467.5622,4,2,3,Flat,Card,24,,
+469.5622,4,2,3,Flat,Card,7,,
+469.7733,4,2,3,Flat,Card,21,,
+476.8733,4,2,3,Flat,Card,,24,
+478.0956,4,2,3,Flat,Card,,14,
+479.4178,4,2,3,Flat,Card,,4,
+481.9289,4,2,3,Flat,Card,,7,
+483.0956,4,2,3,Flat,Card,,21,
+483.0956,4,2,3,Flat,Distractor,,,
+489.9844,4,2,3,Flat,Bingo,,,
+492.9622,4,2,3,Flat,Bingo,,,
+495.94,4,2,3,Flat,Bingo,,,
+498.9178,4,2,3,Flat,Bingo,,,
+500.3178,4,2,3,Flat,SelectedCards,,,
+505.3178,4,2,3,Flat,Card,,,24
+506.7178,4,2,3,Flat,Card,,,14
+508.5178,4,2,3,Flat,Card,,,4
+513.3511,4,2,3,Flat,Card,,,7
+519.5511,4,2,3,Flat,Card,,,21
+522.0845,4,2,3,Flat,Result,,,
+528.9289,5,3,3,Flat,Prepare,,,
+531.4178,5,3,3,Flat,ShowPattern,,,
+532.24,5,3,3,Flat,Card,2,,
+532.3511,5,3,3,Flat,Card,25,,
+537.7178,5,3,3,Flat,Card,,25,
+539.0845,5,3,3,Flat,Card,,2,
+540.8845,5,3,3,Flat,Card,30,,
+540.9511,5,3,3,Flat,Card,20,,
+541.0178,5,3,3,Flat,Card,11,,
+546.0845,5,3,3,Flat,Card,,30,
+547.1844,5,3,3,Flat,Card,,20,
+548.4955,5,3,3,Flat,Card,,11,
+548.4955,5,3,3,Flat,Distractor,,,
+562.2844,5,3,3,Flat,Bingo,,,
+566.3177,5,3,3,Flat,SelectedCards,,,
+570.4733,5,3,3,Flat,Card,,,25
+572.1178,5,3,3,Flat,Card,,,2
+580.6622,5,3,3,Flat,Card,,,30
+581.7289,5,3,3,Flat,Card,,,20
+583.4622,5,3,3,Flat,Card,,,11
+585.0623,5,3,3,Flat,Result,,,
+587.3734,6,4,3,Flat,Prepare,,,
+590.44,6,4,3,Flat,ShowPattern,,,
+590.4622,6,4,3,Flat,Card,17,,
+591.3511,6,4,3,Flat,Card,27,,
+591.4511,6,4,3,Flat,Card,25,,
+593.6067,6,4,3,Flat,Card,7,,
+594.0734,6,4,3,Flat,Card,11,,
+597.8956,6,4,3,Flat,Card,,25,
+599.3845,6,4,3,Flat,Card,,27,
+601.3956,6,4,3,Flat,Card,,17,
+603.1733,6,4,3,Flat,Card,,7,
+605.4289,6,4,3,Flat,Card,,11,
+605.4289,6,4,3,Flat,Distractor,,,
+611.5956,6,4,3,Flat,Bingo,,,
+614.6289,6,4,3,Flat,Bingo,,,
+617.7844,6,4,3,Flat,Bingo,,,
+621.1067,6,4,3,Flat,Bingo,,,
+623.1956,6,4,3,Flat,SelectedCards,,,
+638.1956,6,4,3,Flat,Card,,,25
+644.6622,6,4,3,Flat,Card,,,15
+650.1067,6,4,3,Flat,Card,,,11
+657.2733,6,4,3,Flat,Card,,,18
+667.3956,6,4,3,Flat,Card,,,21
+668.5845,6,4,3,Flat,Result,,,
+670.74,7,5,3,Flat,Prepare,,,
+673.7955,7,5,3,Flat,ShowPattern,,,
+674.3289,7,5,3,Flat,Card,29,,
+674.6067,7,5,3,Flat,Card,14,,
+674.7067,7,5,3,Flat,Card,0,,
+678.5289,7,5,3,Flat,Card,31,,
+678.7067,7,5,3,Flat,Card,22,,
+685.2844,7,5,3,Flat,Card,,0,
+686.8733,7,5,3,Flat,Card,,14,
+689.2844,7,5,3,Flat,Card,,29,
+690.6956,7,5,3,Flat,Card,,31,
+692.8845,7,5,3,Flat,Card,,22,
+692.8845,7,5,3,Flat,Distractor,,,
+699.1289,7,5,3,Flat,Bingo,,,
+702.0067,7,5,3,Flat,Bingo,,,
+707.5178,7,5,3,Flat,Bingo,,,
+710.8622,7,5,3,Flat,SelectedCards,,,
+717.3733,7,5,3,Flat,Card,,,0
+719.4844,7,5,3,Flat,Card,,,14
+722.9511,7,5,3,Flat,Card,,,29
+733.1733,7,5,3,Flat,Card,,,20
+735.2733,7,5,3,Flat,Card,,,22
+736.3622,7,5,3,Flat,Result,,,
+738.5511,8,6,3,Flat,Prepare,,,
+740.9067,8,6,3,Flat,ShowPattern,,,
+740.9289,8,6,3,Flat,Card,6,,
+741.9511,8,6,3,Flat,Card,26,,
+741.9733,8,6,3,Flat,Card,1,,
+743.6733,8,6,3,Flat,Card,21,,
+743.7511,8,6,3,Flat,Card,35,,
+751.0178,8,6,3,Flat,Card,,1,
+753.2622,8,6,3,Flat,Card,,26,
+757.1622,8,6,3,Flat,Card,,6,
+759.1289,8,6,3,Flat,Card,,21,
+760.44,8,6,3,Flat,Card,,35,
+760.44,8,6,3,Flat,Distractor,,,
+768.4511,8,6,3,Flat,Bingo,,,
+770.9067,8,6,3,Flat,Bingo,,,
+774.0956,8,6,3,Flat,Bingo,,,
+776.8956,8,6,3,Flat,Bingo,,,
+778.7067,8,6,3,Flat,SelectedCards,,,
+786.3734,8,6,3,Flat,Card,,,35
+791.04,8,6,3,Flat,Card,,,20
+796.0845,8,6,3,Flat,Card,,,1
+797.1844,8,6,3,Flat,Card,,,26
+804.0289,8,6,3,Flat,Card,,,5
+805.24,8,6,3,Flat,Result,,,
+807.7733,9,7,3,Flat,Prepare,,,
+811.0956,9,7,3,Flat,ShowPattern,,,
+811.7289,9,7,3,Flat,Card,7,,
+811.9956,9,7,3,Flat,Card,9,,
+812.0623,9,7,3,Flat,Card,34,,
+814.3066,9,7,3,Flat,Card,14,,
+814.3734,9,7,3,Flat,Card,12,,
+822.1511,9,7,3,Flat,Card,,12,
+823.1622,9,7,3,Flat,Card,,14,
+826.24,9,7,3,Flat,Card,,7,
+827.7622,9,7,3,Flat,Card,,9,
+828.5623,9,7,3,Flat,Card,,34,
+828.5623,9,7,3,Flat,Distractor,,,
+841.7955,9,7,3,Flat,Bingo,,,
+844.7955,9,7,3,Flat,Bingo,,,
+846.9289,9,7,3,Flat,SelectedCards,,,
+851.3734,9,7,3,Flat,Card,,,12
+852.5845,9,7,3,Flat,Card,,,14
+863.0178,9,7,3,Flat,Card,,,7
+864.7289,9,7,3,Flat,Card,,,9
+867.7844,9,7,3,Flat,Card,,,34
+869.4289,9,7,3,Flat,Result,,,
+873.7511,10,8,3,Flat,Prepare,,,
+875.4622,10,8,3,Flat,ShowPattern,,,
+876.1511,10,8,3,Flat,Card,1,,
+876.2511,10,8,3,Flat,Card,24,,
+877.5623,10,8,3,Flat,Card,19,,
+877.6622,10,8,3,Flat,Card,9,,
+877.6844,10,8,3,Flat,Card,34,,
+881.5956,10,8,3,Flat,Card,,24,
+882.44,10,8,3,Flat,Card,,1,
+886.6178,10,8,3,Flat,Card,,19,
+888.0511,10,8,3,Flat,Card,,9,
+889.1289,10,8,3,Flat,Card,,34,
+890.4289,10,8,3,Flat,Distractor,,,
+902.2289,10,8,3,Flat,Bingo,,,
+909.2067,10,8,3,Flat,SelectedCards,,,
+913.0956,10,8,3,Flat,Card,,,24
+914.0511,10,8,3,Flat,Card,,,1
+918.6733,10,8,3,Flat,Card,,,18
+922.04,10,8,3,Flat,Card,,,8
+923.1067,10,8,3,Flat,Card,,,34
+927.0289,10,8,3,Flat,Result,,,
+1164.718,11,Training,3,Full Circle,Prepare,,,
+1168.484,11,Training,3,Full Circle,ShowPattern,,,
+1169.885,11,Training,3,Full Circle,Card,12,,
+1171.118,11,Training,3,Full Circle,Card,5,,
+1171.684,11,Training,3,Full Circle,Card,30,,
+1178.662,11,Training,3,Full Circle,Card,,5,
+1182.662,11,Training,3,Full Circle,Card,,30,
+1185.262,11,Training,3,Full Circle,Card,9,,
+1186.129,11,Training,3,Full Circle,Card,34,,
+1187.04,11,Training,3,Full Circle,Card,,9,
+1189.073,11,Training,3,Full Circle,Card,,34,
+1190.951,11,Training,3,Full Circle,Card,,12,
+1190.951,11,Training,3,Full Circle,Distractor,,,
+1205.907,11,Training,3,Full Circle,SelectedCards,,,
+1213.885,11,Training,3,Full Circle,Card,,,4
+1216.296,11,Training,3,Full Circle,Card,,,29
+1218.262,11,Training,3,Full Circle,Card,,,8
+1220.818,11,Training,3,Full Circle,Card,,,12
+1223.662,11,Training,3,Full Circle,Card,,,25
+1224.684,11,Training,3,Full Circle,Result,,,
+1226.851,11,Training,3,Full Circle,Prepare,,,
+1228.473,11,Training,3,Full Circle,ShowPattern,,,
+1232.451,11,Training,3,Full Circle,Card,30,,
+1234.707,11,Training,3,Full Circle,Card,,30,
+1235.307,11,Training,3,Full Circle,Card,7,,
+1236.496,11,Training,3,Full Circle,Card,,7,
+1237.34,11,Training,3,Full Circle,Card,21,,
+1238.184,11,Training,3,Full Circle,Card,,21,
+1238.829,11,Training,3,Full Circle,Card,11,,
+1240.062,11,Training,3,Full Circle,Card,,11,
+1242.662,11,Training,3,Full Circle,Card,25,,
+1243.407,11,Training,3,Full Circle,Card,,25,
+1243.429,11,Training,3,Full Circle,Distractor,,,
+1252.062,11,Training,3,Full Circle,Bingo,,,
+1258.385,11,Training,3,Full Circle,SelectedCards,,,
+1260.996,11,Training,3,Full Circle,Card,,,30
+1262.429,11,Training,3,Full Circle,Card,,,21
+1267.418,11,Training,3,Full Circle,Card,,,0
+1270.673,11,Training,3,Full Circle,Card,,,25
+1274.062,11,Training,3,Full Circle,Card,,,14
+1275.407,11,Training,3,Full Circle,Result,,,
+1277.885,11,Training,3,Full Circle,Prepare,,,
+1280.462,11,Training,3,Full Circle,ShowPattern,,,
+1281.807,11,Training,3,Full Circle,Card,28,,
+1283.729,11,Training,3,Full Circle,Card,,28,
+1285.051,11,Training,3,Full Circle,Card,7,,
+1286.118,11,Training,3,Full Circle,Card,,7,
+1289.307,11,Training,3,Full Circle,Card,22,,
+1290.051,11,Training,3,Full Circle,Card,,22,
+1291.496,11,Training,3,Full Circle,Card,24,,
+1292.318,11,Training,3,Full Circle,Card,,24,
+1292.807,11,Training,3,Full Circle,Card,1,,
+1293.773,11,Training,3,Full Circle,Card,,1,
+1295.418,11,Training,3,Full Circle,Distractor,,,
+1301.751,11,Training,3,Full Circle,Bingo,,,
+1305.362,11,Training,3,Full Circle,Bingo,,,
+1310.362,11,Training,3,Full Circle,SelectedCards,,,
+1312.262,11,Training,3,Full Circle,Card,,,28
+1314.162,11,Training,3,Full Circle,Card,,,18
+1317.173,11,Training,3,Full Circle,Card,,,9
+1322.173,11,Training,3,Full Circle,Card,,,24
+1322.996,11,Training,3,Full Circle,Card,,,1
+1324.04,11,Training,3,Full Circle,Result,,,
+1326.618,11,Training,3,Full Circle,Prepare,,,
+1327.284,11,Training,3,Full Circle,ShowPattern,,,
+1327.829,11,Training,3,Full Circle,Card,16,,
+1337.051,11,Training,3,Full Circle,Card,13,,
+1337.707,11,Training,3,Full Circle,Card,11,,
+1337.962,11,Training,3,Full Circle,Card,34,,
+1341.882,13,9,3,Full Circle,Prepare,,,
+1343.26,13,9,3,Full Circle,ShowPattern,,,
+1344.927,13,9,3,Full Circle,Card,5,,
+1347.193,13,9,3,Full Circle,Card,,5,
+1348.227,13,9,3,Full Circle,Card,30,,
+1349.571,13,9,3,Full Circle,Card,,30,
+1350.56,13,9,3,Full Circle,Card,9,,
+1351.427,13,9,3,Full Circle,Card,,9,
+1355.193,13,9,3,Full Circle,Card,12,,
+1355.96,13,9,3,Full Circle,Card,,12,
+1357.704,13,9,3,Full Circle,Card,34,,
+1358.771,13,9,3,Full Circle,Card,,34,
+1358.771,13,9,3,Full Circle,Distractor,,,
+1364.46,13,9,3,Full Circle,Bingo,,,
+1370.227,13,9,3,Full Circle,Bingo,,,
+1373.227,13,9,3,Full Circle,Bingo,,,
+1373.727,13,9,3,Full Circle,SelectedCards,,,
+1379.593,13,9,3,Full Circle,Card,,,28
+1385.171,13,9,3,Full Circle,Card,,,6
+1388.816,13,9,3,Full Circle,Card,,,22
+1390.304,13,9,3,Full Circle,Card,,,0
+1391.504,13,9,3,Full Circle,Card,,,25
+1393.016,13,9,3,Full Circle,Result,,,
+1395.96,14,10,3,Full Circle,Prepare,,,
+1398.082,14,10,3,Full Circle,ShowPattern,,,
+1398.938,14,10,3,Full Circle,Card,14,,
+1400.127,14,10,3,Full Circle,Card,28,,
+1401.849,14,10,3,Full Circle,Card,,14,
+1402.927,14,10,3,Full Circle,Card,11,,
+1404.627,14,10,3,Full Circle,Card,,11,
+1405.027,14,10,3,Full Circle,Card,21,,
+1405.96,14,10,3,Full Circle,Card,,21,
+1406.549,14,10,3,Full Circle,Card,31,,
+1407.96,14,10,3,Full Circle,Card,,31,
+1413.238,14,10,3,Full Circle,Card,,28,
+1413.238,14,10,3,Full Circle,Distractor,,,
+1426.604,14,10,3,Full Circle,Bingo,,,
+1428.182,14,10,3,Full Circle,SelectedCards,,,
+1435.671,14,10,3,Full Circle,Card,,,2
+1437.782,14,10,3,Full Circle,Card,,,28
+1443.427,14,10,3,Full Circle,Card,,,10
+1448.282,14,10,3,Full Circle,Card,,,19
+1450.882,14,10,3,Full Circle,Card,,,12
+1451.96,14,10,3,Full Circle,Result,,,
+1453.627,15,11,3,Full Circle,Prepare,,,
+1454.527,15,11,3,Full Circle,ShowPattern,,,
+1454.549,15,11,3,Full Circle,Card,15,,
+1458.104,15,11,3,Full Circle,Card,5,,
+1461.804,15,11,3,Full Circle,Card,24,,
+1465.171,15,11,3,Full Circle,Card,10,,
+1465.249,15,11,3,Full Circle,Card,33,,
+1468.782,15,11,3,Full Circle,Card,,15,
+1469.827,15,11,3,Full Circle,Card,,5,
+1471.449,15,11,3,Full Circle,Card,,10,
+1472.904,15,11,3,Full Circle,Card,,33,
+1474.982,15,11,3,Full Circle,Card,,24,
+1474.982,15,11,3,Full Circle,Distractor,,,
+1482.104,15,11,3,Full Circle,Bingo,,,
+1489.938,15,11,3,Full Circle,SelectedCards,,,
+1507.115,15,11,3,Full Circle,Card,,,25
+1512.249,15,11,3,Full Circle,Card,,,18
+1513.76,15,11,3,Full Circle,Card,,,16
+1516.516,15,11,3,Full Circle,Card,,,23
+1517.249,15,11,3,Full Circle,Card,,,22
+1519.56,15,11,3,Full Circle,Result,,,
+1522.027,16,12,3,Full Circle,Prepare,,,
+1523.593,16,12,3,Full Circle,ShowPattern,,,
+1524.082,16,12,3,Full Circle,Card,28,,
+1527.693,16,12,3,Full Circle,Card,24,,
+1530.404,16,12,3,Full Circle,Card,,28,
+1532.193,16,12,3,Full Circle,Card,,24,
+1532.938,16,12,3,Full Circle,Card,10,,
+1534.538,16,12,3,Full Circle,Card,,10,
+1534.96,16,12,3,Full Circle,Card,8,,
+1536.293,16,12,3,Full Circle,Card,,8,
+1536.615,16,12,3,Full Circle,Card,18,,
+1539.693,16,12,3,Full Circle,Card,,18,
+1539.693,16,12,3,Full Circle,Distractor,,,
+1548.993,16,12,3,Full Circle,Bingo,,,
+1552.038,16,12,3,Full Circle,Bingo,,,
+1554.649,16,12,3,Full Circle,SelectedCards,,,
+1558.949,16,12,3,Full Circle,Card,,,18
+1561.482,16,12,3,Full Circle,Card,,,10
+1571.249,16,12,3,Full Circle,Card,,,12
+1574.204,16,12,3,Full Circle,Card,,,2
+1578.982,16,12,3,Full Circle,Card,,,24
+1580.316,16,12,3,Full Circle,Result,,,
+1582.049,17,13,3,Full Circle,Prepare,,,
+1583.293,17,13,3,Full Circle,ShowPattern,,,
+1583.316,17,13,3,Full Circle,Card,4,,
+1585.071,17,13,3,Full Circle,Card,13,,
+1587.038,17,13,3,Full Circle,Card,,4,
+1589.271,17,13,3,Full Circle,Card,6,,
+1590.138,17,13,3,Full Circle,Card,,6,
+1591.771,17,13,3,Full Circle,Card,21,,
+1592.771,17,13,3,Full Circle,Card,,21,
+1593.504,17,13,3,Full Circle,Card,35,,
+1596.816,17,13,3,Full Circle,Card,,35,
+1597.916,17,13,3,Full Circle,Card,,13,
+1598.249,17,13,3,Full Circle,Distractor,,,
+1605.66,17,13,3,Full Circle,Bingo,,,
+1608.193,17,13,3,Full Circle,Bingo,,,
+1613.204,17,13,3,Full Circle,SelectedCards,,,
+1619.393,17,13,3,Full Circle,Card,,,4
+1620.204,17,13,3,Full Circle,Card,,,6
+1633.949,17,13,3,Full Circle,Card,,,22
+1637.627,17,13,3,Full Circle,Card,,,10
+1640.571,17,13,3,Full Circle,Card,,,12
+1641.927,17,13,3,Full Circle,Result,,,
+1643.115,18,14,3,Full Circle,Prepare,,,
+1644.538,18,14,3,Full Circle,ShowPattern,,,
+1645.271,18,14,3,Full Circle,Card,14,,
+1647.093,18,14,3,Full Circle,Card,,14,
+1648.438,18,14,3,Full Circle,Card,29,,
+1651.716,18,14,3,Full Circle,Card,,29,
+1653.571,18,14,3,Full Circle,Card,9,,
+1654.038,18,14,3,Full Circle,Card,,9,
+1655.949,18,14,3,Full Circle,Card,0,,
+1658.316,18,14,3,Full Circle,Card,,0,
+1658.971,18,14,3,Full Circle,Card,34,,
+1660.238,18,14,3,Full Circle,Card,,34,
+1660.238,18,14,3,Full Circle,Distractor,,,
+1668.149,18,14,3,Full Circle,Bingo,,,
+1675.182,18,14,3,Full Circle,SelectedCards,,,
+1681.516,18,14,3,Full Circle,Card,,,0
+1687.382,18,14,3,Full Circle,Card,,,10
+1692.604,18,14,3,Full Circle,Card,,,5
+1695.115,18,14,3,Full Circle,Card,,,14
+1696.016,18,14,3,Full Circle,Card,,,2
+1697.071,18,14,3,Full Circle,Result,,,
+1698.149,19,15,3,Full Circle,Prepare,,,
+1699.416,19,15,3,Full Circle,ShowPattern,,,
+1700.204,19,15,3,Full Circle,Card,26,,
+1700.227,19,15,3,Full Circle,Card,28,,
+1703.982,19,15,3,Full Circle,Card,,26,
+1704.638,19,15,3,Full Circle,Card,,28,
+1705.171,19,15,3,Full Circle,Card,1,,
+1705.482,19,15,3,Full Circle,Card,23,,
+1707.149,19,15,3,Full Circle,Card,,1,
+1708.304,19,15,3,Full Circle,Card,,23,
+1708.638,19,15,3,Full Circle,Card,21,,
+1709.838,19,15,3,Full Circle,Card,,21,
+1714.382,19,15,3,Full Circle,Distractor,,,
+1719.893,19,15,3,Full Circle,Bingo,,,
+1726.56,19,15,3,Full Circle,Bingo,,,
+1729.327,19,15,3,Full Circle,SelectedCards,,,
+1752.982,19,15,3,Full Circle,Card,,,26
+1753.76,19,15,3,Full Circle,Card,,,28
+1765.549,19,15,3,Full Circle,Card,,,0
+1767.615,19,15,3,Full Circle,Card,,,10
+1769.971,19,15,3,Full Circle,Card,,,18
+1771.893,19,15,3,Full Circle,Result,,,
+1772.849,20,16,3,Full Circle,Prepare,,,
+1774.115,20,16,3,Full Circle,ShowPattern,,,
+1774.138,20,16,3,Full Circle,Card,16,,
+1775.316,20,16,3,Full Circle,Card,26,,
+1777.016,20,16,3,Full Circle,Card,,26,
+1777.816,20,16,3,Full Circle,Card,,16,
+1779.127,20,16,3,Full Circle,Card,1,,
+1780.838,20,16,3,Full Circle,Card,,1,
+1783.916,20,16,3,Full Circle,Card,34,,
+1784.96,20,16,3,Full Circle,Card,,34,
+1787.838,20,16,3,Full Circle,Card,11,,
+1789.071,20,16,3,Full Circle,Card,,11,
+1789.082,20,16,3,Full Circle,Distractor,,,
+1797.082,20,16,3,Full Circle,Bingo,,,
+1801.049,20,16,3,Full Circle,Bingo,,,
+1804.027,20,16,3,Full Circle,SelectedCards,,,
+1809.938,20,16,3,Full Circle,Card,,,26
+1810.671,20,16,3,Full Circle,Card,,,16
+1815.393,20,16,3,Full Circle,Card,,,11
+1822.893,20,16,3,Full Circle,Card,,,8
+1826.16,20,16,3,Full Circle,Card,,,30
+1827.727,20,16,3,Full Circle,Result,,,
+1828.682,21,Training,3,Limited Flat,Prepare,,,
+2469.682,21,Training,3,Limited Flat,ShowPattern,,,
+2469.705,21,Training,3,Limited Flat,Card,30,,
+2470.049,21,Training,3,Limited Flat,Card,5,,
+2483.282,21,Training,3,Limited Flat,Card,,5,
+2484.116,21,Training,3,Limited Flat,Card,,30,
+2489.271,21,Training,3,Limited Flat,Card,23,,
+2492.082,21,Training,3,Limited Flat,Card,,23,
+2501.86,21,Training,3,Limited Flat,Card,26,,
+2502.549,21,Training,3,Limited Flat,Card,1,,
+2504.571,21,Training,3,Limited Flat,Card,,1,
+2506.182,21,Training,3,Limited Flat,Card,,26,
+2506.182,21,Training,3,Limited Flat,Distractor,,,
+2518.193,21,Training,3,Limited Flat,Bingo,,,
+2521.638,21,Training,3,Limited Flat,Bingo,,,
+2526.149,21,Training,3,Limited Flat,SelectedCards,,,
+2536.127,21,Training,3,Limited Flat,Card,,,2
+2539.604,21,Training,3,Limited Flat,Card,,,28
+2547.304,21,Training,3,Limited Flat,Card,,,23
+2552.004,21,Training,3,Limited Flat,Card,,,20
+2552.86,21,Training,3,Limited Flat,Card,,,31
+2555.071,21,Training,3,Limited Flat,Result,,,
+2559.604,21,Training,3,Limited Flat,Prepare,,,
+2565.349,21,Training,3,Limited Flat,ShowPattern,,,
+2565.371,21,Training,3,Limited Flat,Card,30,,
+2572.971,21,Training,3,Limited Flat,Card,25,,
+2577.904,21,Training,3,Limited Flat,Card,,25,
+2586.193,21,Training,3,Limited Flat,Card,7,,
+2589.538,21,Training,3,Limited Flat,Card,,30,
+2590.427,21,Training,3,Limited Flat,Card,,7,
+2590.593,21,Training,3,Limited Flat,Card,21,,
+2592.871,21,Training,3,Limited Flat,Card,,21,
+2593.338,21,Training,3,Limited Flat,Card,11,,
+2595.749,21,Training,3,Limited Flat,Card,,11,
+2595.749,21,Training,3,Limited Flat,Distractor,,,
+2614.216,21,Training,3,Limited Flat,Bingo,,,
+2616.716,21,Training,3,Limited Flat,SelectedCards,,,
+2627.216,21,Training,3,Limited Flat,Card,,,25
+2639.693,21,Training,3,Limited Flat,Card,,,23
+2639.938,21,Training,3,Limited Flat,Card,,,34
+2641.416,21,Training,3,Limited Flat,Card,,,21
+2641.849,21,Training,3,Limited Flat,Card,,,20
+2644.76,21,Training,3,Limited Flat,Result,,,
+2649.016,21,Training,3,Limited Flat,Prepare,,,
+2650.538,21,Training,3,Limited Flat,ShowPattern,,,
+2650.56,21,Training,3,Limited Flat,Card,7,,
+2652.86,21,Training,3,Limited Flat,Card,28,,
+2654.86,21,Training,3,Limited Flat,Card,1,,
+2656.238,21,Training,3,Limited Flat,Card,24,,
+2662.282,21,Training,3,Limited Flat,Card,,24,
+2663.038,21,Training,3,Limited Flat,Card,,1,
+2670.004,21,Training,3,Limited Flat,Card,,28,
+2674.149,21,Training,3,Limited Flat,Card,,7,
+2675.827,21,Training,3,Limited Flat,Card,22,,
+2678.038,21,Training,3,Limited Flat,Card,,22,
+2678.038,21,Training,3,Limited Flat,Distractor,,,
+2690.049,21,Training,3,Limited Flat,Bingo,,,
+2696.638,21,Training,3,Limited Flat,SelectedCards,,,
+2706.482,21,Training,3,Limited Flat,Card,,,1
+2714.538,21,Training,3,Limited Flat,Card,,,13
+2720.593,21,Training,3,Limited Flat,Card,,,16
+2736.016,21,Training,3,Limited Flat,Card,,,22
+2740.282,21,Training,3,Limited Flat,Card,,,32
+2742.093,21,Training,3,Limited Flat,Result,,,
+2747.216,21,Training,3,Limited Flat,Prepare,,,
+2748.338,21,Training,3,Limited Flat,ShowPattern,,,
+2748.36,21,Training,3,Limited Flat,Card,6,,
+2750.582,21,Training,3,Limited Flat,Card,16,,
+2753.893,21,Training,3,Limited Flat,Card,13,,
+2757.482,21,Training,3,Limited Flat,Card,,13,
+2760.649,21,Training,3,Limited Flat,Card,,16,
+2764.282,21,Training,3,Limited Flat,Card,,6,
+2768.893,21,Training,3,Limited Flat,Card,34,,
+2769.182,21,Training,3,Limited Flat,Card,11,,
+2771.249,21,Training,3,Limited Flat,Card,,11,
+2772.86,21,Training,3,Limited Flat,Card,,34,
+2772.86,21,Training,3,Limited Flat,Distractor,,,
+2789.671,21,Training,3,Limited Flat,Bingo,,,
+2791.182,21,Training,3,Limited Flat,SelectedCards,,,
+2797.06,21,Training,3,Limited Flat,Card,,,13
+2802.327,21,Training,3,Limited Flat,Card,,,16
+2808.538,21,Training,3,Limited Flat,Card,,,6
+2815.293,21,Training,3,Limited Flat,Card,,,11
+2816.438,21,Training,3,Limited Flat,Card,,,34
+2817.982,21,Training,3,Limited Flat,Result,,,
+2827.193,22,Training,3,Limited Flat,Prepare,,,
+2829.315,22,Training,3,Limited Flat,ShowPattern,,,
+2830.705,22,Training,3,Limited Flat,Card,4,,
+2832.871,22,Training,3,Limited Flat,Card,14,,
+2835.027,22,Training,3,Limited Flat,Card,24,,
+2841.304,22,Training,3,Limited Flat,Card,,14,
+2842.193,22,Training,3,Limited Flat,Card,,24,
+2845.482,22,Training,3,Limited Flat,Card,,4,
+2846.527,22,Training,3,Limited Flat,Card,7,,
+2849.471,22,Training,3,Limited Flat,Card,,7,
+2850.027,22,Training,3,Limited Flat,Card,21,,
+2853.393,22,Training,3,Limited Flat,Card,,21,
+2853.393,22,Training,3,Limited Flat,Distractor,,,
+2864.282,22,Training,3,Limited Flat,Bingo,,,
+2867.627,22,Training,3,Limited Flat,Bingo,,,
+2870.871,22,Training,3,Limited Flat,Bingo,,,
+2871.549,22,Training,3,Limited Flat,SelectedCards,,,
+2879.427,22,Training,3,Limited Flat,Card,,,14
+2880.66,22,Training,3,Limited Flat,Card,,,24
+2885.227,22,Training,3,Limited Flat,Card,,,4
+2889.671,22,Training,3,Limited Flat,Card,,,7
+2895.449,22,Training,3,Limited Flat,Card,,,21
+2896.727,22,Training,3,Limited Flat,Result,,,
+2898.871,23,17,3,Limited Flat,Prepare,,,

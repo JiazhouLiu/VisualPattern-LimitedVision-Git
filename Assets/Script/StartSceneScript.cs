@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine.UI;
 using VRTK;
 using TMPro;
+using Random = UnityEngine.Random;
 
 public class StartSceneScript : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class StartSceneScript : MonoBehaviour
     public static string CurrentDateTime;
     public static int PublicTrialNumber;
     public static float lastTimePast;
+    public static int distratorType = 1;
 
     [Header("Do Not Change")]
     public int trainingCount = 0; // 0: Space, 1: Card, 2: Basketball 3: GO TO Experiment
@@ -26,9 +28,10 @@ public class StartSceneScript : MonoBehaviour
     public Transform FootPrint;
     public TextMeshProUGUI trackPadText;
 
-    public Transform Hoop;
-    public Transform Stand;
-    public Transform Ball;
+    //public Transform Hoop;
+    //public Transform Stand;
+    //public Transform Ball;
+    public Transform CardGame;
     public Transform Cards;
     public Transform FilterCube;
 
@@ -43,6 +46,7 @@ public class StartSceneScript : MonoBehaviour
     private bool showPatternFlag = false;
     private List<GameObject> cardLists;
     private List<GameObject> selectedCards;
+    private List<GameObject> selectedGameCards;
     private VRTK_InteractTouch mainHandIT;
     private int mainHandIndex = -1;
 
@@ -54,6 +58,7 @@ public class StartSceneScript : MonoBehaviour
         }
 
         selectedCards = new List<GameObject>();
+        selectedGameCards = new List<GameObject>();
         cardLists = new List<GameObject>
         {
             Cards.GetChild(0).gameObject,
@@ -106,6 +111,14 @@ public class StartSceneScript : MonoBehaviour
             ExperimentSequence = 1;
         }
 
+        for (int i = 0; i < CardGame.childCount; i++)
+        {
+            Vector3 temp = CardGame.GetChild(i).localPosition;
+            int randomIndex = Random.Range(i, CardGame.childCount);
+            CardGame.GetChild(i).localPosition = CardGame.GetChild(randomIndex).localPosition;
+            CardGame.GetChild(randomIndex).localPosition = temp;
+        }
+
         if (TrialNumber == 0)
         {
             CurrentDateTime = GetDateTimeString();
@@ -130,13 +143,13 @@ public class StartSceneScript : MonoBehaviour
             // interaction log
             string writerInteractionFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + ParticipantID + "/Participant_" + ParticipantID + "_Interaction.csv";
             writer = new StreamWriter(writerInteractionFilePath, false);
-            writer.WriteLine("TimeSinceStart,TrialNo,TrialID,ParticipantID,Layout,Info,CardSeen,CardSelected,CardAnswered");
+            writer.WriteLine("TimeSinceStart,TrialNo,TrialID,ParticipantID,Layout,Info,CardSeen,CardSelected,CardAnswered,CardPlayed");
             writer.Close();
 
             // Answers data log
             string writerAnswerFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + ParticipantID + "/Participant_" + ParticipantID + "_Answers.csv";
             writer = new StreamWriter(writerAnswerFilePath, false);
-            writer.WriteLine("ParticipantID,TrialNo,TrialID,Layout,Difficulty,AnswerAccuracy,ShootAccuracy,Card1SeenTime,Card2SeenTime,Card3SeenTime,Card4SeenTime,Card5SeenTime," +
+            writer.WriteLine("ParticipantID,TrialNo,TrialID,Layout,Difficulty,AnswerAccuracy,Card1SeenTime,Card2SeenTime,Card3SeenTime,Card4SeenTime,Card5SeenTime," +
                 "Card1SelectTime,Card2SelectTime,Card3SelectTime,Card4SelectTime,Card5SelectTime");
             writer.Close();
         }
@@ -275,17 +288,84 @@ public class StartSceneScript : MonoBehaviour
                             Cards.gameObject.SetActive(false);
                             //FilterCube.gameObject.SetActive(false);
 
-                            instruction.text = "Play phase";
-                            instruction2.text = "Play phase";
+                            if (distratorType == 0)
+                            {
+                                instruction.text = "3 2 8 5 9";
+                                instruction2.text = "3 2 8 5 9";
 
-                            if (!Hoop.gameObject.activeSelf)
-                                Hoop.gameObject.SetActive(true);
+                                //if (!Hoop.gameObject.activeSelf)
+                                //    Hoop.gameObject.SetActive(true);
+
+                                //if (!Stand.gameObject.activeSelf)
+                                //    Stand.gameObject.SetActive(true);
+
+                                //if (!Ball.gameObject.activeSelf)
+                                //    Ball.gameObject.SetActive(true);
+
+                                if (rightCE.touchpadPressed)
+                                    touchPadPressed = true;
+                                if (!rightCE.touchpadPressed && touchPadPressed)
+                                {
+                                    trainingCount = 9;
+                                    touchPadPressed = false;
+                                }
+                            }
+                            else {
+                                instruction.text = "3";
+                                instruction2.text = "3";
+
+                                instruction.transform.parent.parent.position = new Vector3(0, CardGame.position.y + 0.6f, 1f);
+
+                                CardGame.gameObject.SetActive(true);
+
+                                GameObject selectedCard2 = null;
+                                if (mainHandIT.GetTouchedObject() != null)
+                                {
+                                    // haptic function
+                                    SteamVR_Controller.Input(mainHandIndex).TriggerHapticPulse(1500);
+                                    if (selectedGameCards.Count < 1)
+                                    {
+                                        selectedCard2 = mainHandIT.GetTouchedObject();
+                                        if (!selectedGameCards.Contains(selectedCard2))
+                                            selectedGameCards.Add(selectedCard2);
+
+                                        selectedCard2.GetComponent<Card>().filled = true;
+                                        selectedCard2.GetComponent<Card>().seen = true;
+                                        selectedCard2.GetComponent<Card>().selected = true;
+                                    }
+                                }
+
+                                if (rightCE.touchpadPressed)
+                                    touchPadPressed = true;
+                                if (!rightCE.touchpadPressed && touchPadPressed)
+                                {
+                                    trainingCount = 5;
+                                    touchPadPressed = false;
+                                }
+                            }
                             
-                            if (!Stand.gameObject.activeSelf)
-                                Stand.gameObject.SetActive(true);
+                            break;
+                        case 9:
+                            instruction.text = "";
+                            instruction2.text = "";
 
-                            if (!Ball.gameObject.activeSelf)
-                                Ball.gameObject.SetActive(true);
+                            CardGame.gameObject.SetActive(true);
+
+                            GameObject selectedCard = null;
+                            if (mainHandIT.GetTouchedObject() != null)
+                            {
+                                // haptic function
+                                SteamVR_Controller.Input(mainHandIndex).TriggerHapticPulse(1500);
+                                if (selectedGameCards.Count < 5) {
+                                    selectedCard = mainHandIT.GetTouchedObject();
+                                    if (!selectedGameCards.Contains(selectedCard))
+                                        selectedGameCards.Add(selectedCard);
+
+                                    selectedCard.GetComponent<Card>().filled = true;
+                                    selectedCard.GetComponent<Card>().seen = true;
+                                    selectedCard.GetComponent<Card>().selected = true;
+                                }
+                            }
 
                             if (rightCE.touchpadPressed)
                                 touchPadPressed = true;
@@ -296,19 +376,23 @@ public class StartSceneScript : MonoBehaviour
                             }
                             break;
                         case 5:
+
+                            instruction.transform.parent.parent.position = new Vector3(0, 1.8f, 1.35f);
+
+                            CardGame.gameObject.SetActive(false);
                             Cards.gameObject.SetActive(true);
                             FootPrint.gameObject.SetActive(false);
 
-                            if (Hoop.gameObject.activeSelf)
-                                Hoop.gameObject.SetActive(false);
+                            //if (Hoop.gameObject.activeSelf)
+                            //    Hoop.gameObject.SetActive(false);
 
-                            if (Stand.gameObject.activeSelf)
-                                Stand.gameObject.SetActive(false);
+                            //if (Stand.gameObject.activeSelf)
+                            //    Stand.gameObject.SetActive(false);
 
-                            if (Ball.gameObject.activeSelf)
-                                Ball.gameObject.SetActive(false);
+                            //if (Ball.gameObject.activeSelf)
+                            //    Ball.gameObject.SetActive(false);
 
-                            GameObject selectedCard = null;
+                            selectedCard = null;
                             if (mainHandIT.GetTouchedObject() != null)
                             {
                                 // haptic function

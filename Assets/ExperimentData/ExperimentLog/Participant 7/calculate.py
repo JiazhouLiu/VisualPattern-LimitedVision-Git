@@ -1,10 +1,11 @@
 import itertools
 import csv
-  
+
+counter = 0  
 r = 12
 result = []
-trialList = [[0 for x in range(5)] for y in range(20)]
-answerList = [[0 for x in range(5)] for y in range(20)]
+trialList = [[0 for x in range(5)] for y in range(18)]
+answerList = [[0 for x in range(5)] for y in range(18)]
 
 with open('trialCards.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
@@ -34,7 +35,11 @@ for aList in list(trialList):
 
 resultString = ""
 for a in list(result):
-  resultString += str(a) + "\n"
+  if (counter % 2) == 0:
+    resultString += "Flat," + str(a) + "\n"
+  else:
+    resultString += "Circle," + str(a) + "\n"
+  counter += 1
 
 f = open("result.csv", "w")
 f.write(resultString)

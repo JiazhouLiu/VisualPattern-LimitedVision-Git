@@ -5,6 +5,7 @@ using VRTK;
 using TMPro;
 using UnityEngine.UI;
 using System.IO;
+//using System;
 using VRTK.GrabAttachMechanics;
 
 public enum GameState
@@ -37,15 +38,18 @@ public class ExperimentManager : MonoBehaviour
     //public Text MemoryTypeText;
     //public Text TimerText;
     public Text Instruction;
+    public Text InstructionTimer;
     public Transform FootPrint;
     public TextMeshProUGUI LeftControllerText;
     public TextMeshProUGUI RightControllerText;
     public Transform FilterCube;
-    public Transform EdgeIndicator;
-    public Transform Hoop;
-    public Transform Stand;
-    public Transform Ball;
+    //public Transform EdgeIndicator;
+    //public Transform Hoop;
+    //public Transform Stand;
+    //public Transform Ball;
+    public Transform CardGame;
     public AudioClip TimesUp;
+    public AudioClip wrongAnswer;
 
     [Header("Task File")]
     public TextAsset Patterns2;
@@ -54,6 +58,7 @@ public class ExperimentManager : MonoBehaviour
     public TextAsset Patterns5Flat;
     public TextAsset Patterns5Circular;
     public TextAsset Patterns5Supp;
+    public TextAsset GameTask;
 
     [Header("Predefined Variables")]
     public float hDelta;
@@ -94,7 +99,9 @@ public class ExperimentManager : MonoBehaviour
 
     // refresh every trail
     private List<GameObject> cards;
+    private List<GameObject> gameCards;
     private List<GameObject> selectedCards;
+    private List<GameObject> selectedGameCards;
     //private bool correctTrial = true; // true if user answer all correct cards
     private float LocalMemoryTime;
     private float localDistractorTime;
@@ -104,8 +111,13 @@ public class ExperimentManager : MonoBehaviour
     private List<string> LvL5FlatTaskList;
     private List<string> LvL5CircularTaskList;
     private List<string> LvL5SuppTaskList;
+    private List<string> GameTaskList;
     private int[] currentPattern;
+    private int[] currentGameTask;
     private int[] answerPattern;
+    private int currentGameNumber; // game 2
+    private float localTimer; // game 2
+    private bool insideCards = false; // game2
 
     // refresh in one process
     private bool showingPattern = false; // show pattern stage
@@ -118,8 +130,9 @@ public class ExperimentManager : MonoBehaviour
     private float selectTime = 0;
     private int accurateNumber = 0;
     private int shootCount = 0;
-    private int trainingSuppCount = 0;
-    private bool failedTraining = false;
+    //private int trainingSuppCount = 0;
+    //private bool failedTraining = false;
+    private int gameFinshedCount = 0;
 
     // check on update for interaction
     private bool localTouchpadPressed = false;
@@ -127,12 +140,14 @@ public class ExperimentManager : MonoBehaviour
     private bool instruction = true;
     private bool playgroundFlag = false;
     private int basketballScore = 0;
+    
 
     // log use
     private string trialID;
     private int experimentSequence;
     private float currentAllSeenTime;
     private float currentAllSelectTime;
+    [HideInInspector]
     public int shootTotalNumber = 0;
     [HideInInspector]
     public List<float> seenTimeLog;
@@ -149,7 +164,9 @@ public class ExperimentManager : MonoBehaviour
     {
         // initialise variables
         cards = new List<GameObject>();
+        gameCards = new List<GameObject>();
         selectedCards = new List<GameObject>();
+        selectedGameCards = new List<GameObject>();
 
         LvL2TaskList = new List<string>();
         LvL3TaskList = new List<string>();
@@ -157,15 +174,17 @@ public class ExperimentManager : MonoBehaviour
         LvL5FlatTaskList = new List<string>();
         LvL5CircularTaskList = new List<string>();
         LvL5SuppTaskList = new List<string>();
+        GameTaskList = new List<string>();
 
         seenTimeLog = new List<float>();
         selectTimeLog = new List<float>();
 
-        if (StartSceneScript.ParticipantID == 3) {
-            maxTrialNo = 30;
-        }
-
         ReadPatternsFromInput();
+
+        foreach (Transform t in CardGame) {
+            gameCards.Add(t.gameObject);
+        }
+        
 
         // setup main hand
         if (StartSceneScript.controllerHand == 0 || StartSceneScript.controllerHand == 1)
@@ -175,7 +194,7 @@ public class ExperimentManager : MonoBehaviour
 
         // setup adjusted height
         adjustedHeight = StartSceneScript.adjustedHeight;
-        Hoop.position = new Vector3(-0.5f, adjustedHeight + 1.75f, 1.29f);
+        //Hoop.position = new Vector3(-0.5f, adjustedHeight + 1.75f, 1.29f);
 
         // setup experimentSequence
         experimentSequence = StartSceneScript.ExperimentSequence;
@@ -198,20 +217,28 @@ public class ExperimentManager : MonoBehaviour
         writerInteraction = new StreamWriter(writerInteractionFilePath, true);
 
         string writerTrialCardsFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + StartSceneScript.ParticipantID + "/trialCards.csv";
-        writerTrialCards = new StreamWriter(writerTrialCardsFilePath, false);
+        writerTrialCards = new StreamWriter(writerTrialCardsFilePath, true);
 
         string writerAnswerCardsFilePath = "Assets/ExperimentData/ExperimentLog/Participant " + StartSceneScript.ParticipantID + "/answerCards.csv";
-        writerAnswerCards = new StreamWriter(writerAnswerCardsFilePath, false);
+        writerAnswerCards = new StreamWriter(writerAnswerCardsFilePath, true);
 
         LocalMemoryTime = memoryTime;
         localDistractorTime = distractorTime;
+        localTimer = 4;
         // setup experiment
         PrepareExperiment();
+
+       
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (layout == Layout.FullCircle)
+            transform.localEulerAngles = new Vector3(0, 15, 0);
+        else
+            transform.localEulerAngles = new Vector3(0, 0, 0);
+
         if (mainController == null) {
             if (mainHand == 0) {
                 if (GameObject.Find("Controller (left)") != null)
@@ -289,27 +316,26 @@ public class ExperimentManager : MonoBehaviour
                             }
                             break;
                         case GameState.Result:
-                            if (trialNo != 11)
+                            if (trialNo == 9 || trialNo == 15)
                             {
+                                //trainingSuppCount = 0;
+                                Instruction.text = "Break for three minutes.";
                                 LeftControllerText.text = "Start";
                                 RightControllerText.text = "Start";
-                                if (failedTraining)
-                                    PlaySuppTrial();
-                                else
-                                    PrepareExperiment();
-                            }
-                            else
-                            {
-                                LeftControllerText.text = "Break";
-                                RightControllerText.text = "Break";
 
                                 gameState = GameState.Break;
                             }
+                            else
+                            {
+                                LeftControllerText.text = "Start";
+                                RightControllerText.text = "Start";
+                                //if (failedTraining)
+                                //    PlaySuppTrial();
+                                //else
+                                PrepareExperiment();
+                            }
                             break;
                         case GameState.Break:
-                            LeftControllerText.text = "Start";
-                            RightControllerText.text = "Start";
-                            Instruction.text = "Break";
                             PrepareExperiment();
                             break;
                         default:
@@ -320,65 +346,67 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
-    private void PlaySuppTrial() {
+    //private void PlaySuppTrial() {
 
-        trainingSuppCount++;
 
-        gameState = GameState.Prepare;
-        LocalMemoryTime = memoryTime;
-        localDistractorTime = distractorTime;
+    //    trainingSuppCount++;
 
-        WriteInteractionToLog("Prepare");
+    //    gameState = GameState.Prepare;
+    //    LocalMemoryTime = memoryTime;
+    //    localDistractorTime = distractorTime;
 
-        if (GetTrialID() == "Training")
-            Instruction.text = "Training Task: " + ((trialNo % 10) + trainingSuppCount);
-        else
-            Instruction.text = "Experiment Task: " + ((trialNo - 2) % 10) + " / 8";
-        FootPrint.gameObject.SetActive(true);
+    //    WriteInteractionToLog("Prepare");
 
-        if (cards != null)
-        {
-            foreach (GameObject go in cards)
-                Destroy(go);
-            cards.Clear();
+    //    if (GetTrialID() == "Training")
+    //        Instruction.text = "Training Task: " + ((trialNo % 10) + trainingSuppCount);
+    //    else
+    //        Instruction.text = "Experiment Task: " + ((trialNo - 2) % 10) + " / 8";
+    //    FootPrint.gameObject.SetActive(true);
 
-            foreach (GameObject go in selectedCards)
-                Destroy(go);
-            selectedCards.Clear();
-        }
+    //    if (cards != null)
+    //    {
+    //        foreach (GameObject go in cards)
+    //            Destroy(go);
+    //        cards.Clear();
 
-        allSeen = false;
-        allSelected = false;
-        soundPlayed = false;
+    //        foreach (GameObject go in selectedCards)
+    //            Destroy(go);
+    //        selectedCards.Clear();
+    //    }
 
-        scanTime = 0f;
-        selectTime = 0f;
-        shootCount = 0;
+    //    allSeen = false;
+    //    allSelected = false;
+    //    soundPlayed = false;
 
-        seenTimeLog.Clear();
-        selectTimeLog.Clear();
+    //    scanTime = 0f;
+    //    selectTime = 0f;
+    //    shootCount = 0;
 
-        cards = GenerateCards();
+    //    seenTimeLog.Clear();
+    //    selectTimeLog.Clear();
 
-        failedTraining = false;
+    //    cards = GenerateCards();
 
-        SetCardsPositions(cards, layout);
+    //    failedTraining = false;
 
-        LeftControllerText.text = "Start";
-        RightControllerText.text = "Start";
+    //    SetCardsPositions(cards, layout);
 
-        foreach (GameObject card in cards)
-        {
-            card.SetActive(false);
-        }
-        EdgeIndicator.gameObject.SetActive(false);
-    }
+    //    LeftControllerText.text = "Start";
+    //    RightControllerText.text = "Start";
+
+    //    foreach (GameObject card in cards)
+    //    {
+    //        card.SetActive(false);
+    //    }
+    //    EdgeIndicator.gameObject.SetActive(false);
+    //}
 
     // Prepare stage (after clicking ready button)
     private void PrepareExperiment() {
         gameState = GameState.Prepare;
         LocalMemoryTime = memoryTime;
         localDistractorTime = distractorTime;
+        localTimer = 4;
 
         // change trial conditions based on trial number
         // layout
@@ -394,9 +422,9 @@ public class ExperimentManager : MonoBehaviour
         //if (correctTrial)
         //{
             if (GetTrialID() == "Training")
-                Instruction.text = "Training Task: " + ((trialNo % 10) + trainingSuppCount);
+                Instruction.text = "Training Task: " + trialNo;
             else
-                Instruction.text = "Experiment Task: " + ((trialNo - 2) % 10) + " / 8";
+                Instruction.text = "Experiment Task: " + (trialNo - 2) + " / 18";
             FootPrint.gameObject.SetActive(true);
         //}
         //else
@@ -430,6 +458,7 @@ public class ExperimentManager : MonoBehaviour
         scanTime = 0f;
         selectTime = 0f;
         shootCount = 0;
+        gameFinshedCount = 0;
 
         seenTimeLog.Clear();
         selectTimeLog.Clear();
@@ -445,7 +474,7 @@ public class ExperimentManager : MonoBehaviour
         {
             card.SetActive(false);
         }
-        EdgeIndicator.gameObject.SetActive(false);
+        //EdgeIndicator.gameObject.SetActive(false);
     }
 
     // Show pattern (after clicking Start button)
@@ -456,7 +485,8 @@ public class ExperimentManager : MonoBehaviour
         {
             card.SetActive(true);
         }
-        EdgeIndicator.gameObject.SetActive(true);
+        //if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
+            //EdgeIndicator.gameObject.SetActive(true);
 
         gameState = GameState.ShowPattern;
         showingPattern = true;
@@ -547,10 +577,10 @@ public class ExperimentManager : MonoBehaviour
         // increase trial No
         if (GetTrialID() == "Training")
         {
-            if (accurateNumber != difficultyLevel) {
-                failedTraining = true;
-                trialNo--;
-            }
+        //    if (accurateNumber != difficultyLevel) {
+        //        failedTraining = true;
+        //        trialNo--;
+        //    }
         }
         else {
             // Write cards log for accuracy
@@ -679,8 +709,8 @@ public class ExperimentManager : MonoBehaviour
             foreach (GameObject card in cards) {
                 card.SetActive(false);
             }
-            if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
-                EdgeIndicator.gameObject.SetActive(false);
+            //if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
+                //EdgeIndicator.gameObject.SetActive(false);
             if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
                 FilterCube.gameObject.SetActive(false);
 
@@ -688,15 +718,32 @@ public class ExperimentManager : MonoBehaviour
             if (Camera.main.transform.position.x < 0.4f && Camera.main.transform.position.x > -0.4f && Camera.main.transform.position.z < 0.4f &&
                Camera.main.transform.position.z > -0.4f)
             {
+                currentGameTask = GetCurrentGameTask();
+                
                 soundPlayed = false;
-                // show hoop and ball
-                Hoop.gameObject.SetActive(true);
-                Stand.gameObject.SetActive(true);
-                Ball.gameObject.SetActive(true);
-                Instruction.text = "";
+                //// show hoop and ball
+                //Hoop.gameObject.SetActive(true);
+                //Stand.gameObject.SetActive(true);
+                //Ball.gameObject.SetActive(true);
+                if (StartSceneScript.distratorType == 0)
+                {
+                    Instruction.text = string.Join(", ", currentGameTask);
+                    WriteInteractionToLog("Task: " + string.Join("; ", currentGameTask));
+                    CardGame.gameObject.SetActive(false);
+                }
+                else {
+                    CardGame.gameObject.SetActive(true);
+                    int task = RandomNumber(1, 9);
+                    currentGameNumber = task;
+                    Instruction.text = task + "";
+                    WriteInteractionToLog("Task: " + task);
+
+                    Instruction.transform.parent.parent.position = new Vector3(0, CardGame.position.y + 1.4f, 0.5f);
+                }
+
                 FootPrint.gameObject.SetActive(false);
-                //PrintTextToScreen(DashBoardText, "Play Basketball game in 15 seconds. Try to score as many as you can.");
-                GameObject.Find("Hoop").GetComponent<Basket>().ResetScore();
+                ////PrintTextToScreen(DashBoardText, "Play Basketball game in 15 seconds. Try to score as many as you can.");
+                //GameObject.Find("Hoop").GetComponent<Basket>().ResetScore();
             }
             else
                 playgroundFlag = false;
@@ -710,39 +757,52 @@ public class ExperimentManager : MonoBehaviour
             FootPrint.gameObject.SetActive(true);
             Instruction.text = "";
 
-            if (Hoop.gameObject.activeSelf)
+            foreach (GameObject go in gameCards)
             {
-                // hide hoop and ball
-                Hoop.gameObject.SetActive(false);
+                go.GetComponent<Card>().filled = false;
+                go.GetComponent<Card>().seen = false;
+                go.GetComponent<Card>().selected = false;
+                go.GetComponent<Card>().ResetBorderColor();
             }
+            selectedGameCards.Clear();
+            CardGame.gameObject.SetActive(false);
 
-            if (Stand.gameObject.activeSelf)
-            {
-                Stand.gameObject.SetActive(false);
-            }
+            //if (Hoop.gameObject.activeSelf)
+            //{
+            //    // hide hoop and ball
+            //    Hoop.gameObject.SetActive(false);
+            //}
 
-            // reset ball position
-            if (Ball.gameObject.activeSelf) {
-                Ball.transform.position = new Vector3(0, 1.144f, 0.5f);
-                Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-                Ball.gameObject.SetActive(false);
-            }
+            //if (Stand.gameObject.activeSelf)
+            //{
+            //    Stand.gameObject.SetActive(false);
+            //}
+
+            //// reset ball position
+            //if (Ball.gameObject.activeSelf) {
+            //    Ball.transform.position = new Vector3(0, 1.144f, 0.5f);
+            //    Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            //    Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            //    Ball.gameObject.SetActive(false);
+            //}
 
             // check position
             if (Camera.main.transform.position.x < 0.4f && Camera.main.transform.position.x > -0.4f && Camera.main.transform.position.z < 0.4f &&
                Camera.main.transform.position.z > -0.4f)
             {
+                InstructionTimer.text = "";
                 FootPrint.gameObject.SetActive(false);
                 // show cards
                 foreach (GameObject card in cards)
                 {
                     card.SetActive(true);
                 }
-                if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
-                    EdgeIndicator.gameObject.SetActive(true);
+                //if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
+                    //EdgeIndicator.gameObject.SetActive(true);
                 if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
                     FilterCube.gameObject.SetActive(true);
+
+                Instruction.transform.parent.parent.position = new Vector3(0, 2.5f, 1.35f);
 
                 soundPlayed = false;
                 HidePattern(false);
@@ -757,20 +817,208 @@ public class ExperimentManager : MonoBehaviour
         if (playgroundFlag) {
             if (localDistractorTime >= 0)
                 localDistractorTime -= Time.deltaTime;
+            if(localTimer >= 0)
+                localTimer -= Time.deltaTime;
         }
 
-        Instruction.transform.position = new Vector3(0, 1.5f, 1.35f);
-        Instruction.text = "Score: " + shootTotalNumber + "\n";
+        InstructionTimer.text = localDistractorTime.ToString("0.0");
 
-        if (localDistractorTime < 3.5f) {
-            if (!soundPlayed) {
-                AudioSource.PlayClipAtPoint(TimesUp, transform.position);
-                soundPlayed = true;
+        if (StartSceneScript.distratorType == 0) // 5 number sequence tapping
+        {
+            if (mainHandCE.touchpadPressed)
+                localTouchpadPressed = true;
+            if (!mainHandCE.touchpadPressed && localTouchpadPressed)
+            {
+                localTouchpadPressed = false;
+                if (Instruction.text == "" && selectedGameCards.Count == 5)
+                {
+                    CheckGameResult();
+                }
+                else
+                {
+                    Instruction.text = "";
+                    CardGame.gameObject.SetActive(true);
+                }
             }
+
+            //CardGame.gameObject.SetActive(true);
+
+            GameObject selectedCard = null;
+            if (mainHandIT.GetTouchedObject() != null)
+            {
+                // haptic function
+                SteamVR_Controller.Input(mainHandIndex).TriggerHapticPulse(1500);
+                if (selectedGameCards.Count < 5)
+                {
+                    selectedCard = mainHandIT.GetTouchedObject();
+                    if (!selectedGameCards.Contains(selectedCard))
+                    {
+                        selectedGameCards.Add(selectedCard);
+                        WriteInteractionToLog(selectedCard.name + " played");
+                    }
+
+
+                    selectedCard.GetComponent<Card>().filled = true;
+                    selectedCard.GetComponent<Card>().seen = true;
+                    selectedCard.GetComponent<Card>().selected = true;
+                }
+            }
+
+            if (localDistractorTime < 3.5f)
+            {
+                if (!soundPlayed)
+                {
+                    AudioSource.PlayClipAtPoint(TimesUp, transform.position);
+                    soundPlayed = true;
+                }
+            }
+
+            // times up or finish one set, who comes second
+            if (localDistractorTime < 0.05f && gameFinshedCount > 0)
+                HidePlayground();
+        }
+        else
+        { // 1 number continuing tapping
+
+            //if (mainHandCE.touchpadPressed)
+            //    localTouchpadPressed = true;
+            //if (!mainHandCE.touchpadPressed && localTouchpadPressed)
+            //{
+            //    localTouchpadPressed = false;
+            //    if (Instruction.text == "" && selectedGameCards.Count == 5)
+            //    {
+            //        CheckGameResult();
+            //    }
+            //    else
+            //    {
+            //        Instruction.text = "";
+            //        CardGame.gameObject.SetActive(true);
+            //    }
+            //}
+
+            //CardGame.gameObject.SetActive(true);
+
+            GameObject selectedCard = null;
+
+            if (mainHandIT.GetTouchedObject() != null && !insideCards)
+            {
+                // haptic function
+                SteamVR_Controller.Input(mainHandIndex).TriggerHapticPulse(1500);
+                if (selectedGameCards.Count == 0)
+                {
+                    selectedCard = mainHandIT.GetTouchedObject();
+                    if (!selectedGameCards.Contains(selectedCard))
+                    {
+                        selectedGameCards.Add(selectedCard);
+                        WriteInteractionToLog(selectedCard.name + " played");
+                    }
+
+                    selectedCard.GetComponent<Card>().filled = true;
+                    selectedCard.GetComponent<Card>().seen = true;
+                    selectedCard.GetComponent<Card>().selected = true;
+                    insideCards = true;
+                }
+            }
+
+            if ((mainHandCE.transform.parent.position.x > 0.85f || mainHandCE.transform.parent.position.x < -0.85f) ||
+                (mainHandCE.transform.parent.position.y > 2.36f || mainHandCE.transform.parent.position.y < 0.63f) ||
+                (mainHandCE.transform.parent.position.z > 0.67f || mainHandCE.transform.parent.position.z < 0.31f)) {
+                insideCards = false;
+            }
+
+            if (selectedGameCards.Count == 1) {
+                if (selectedCard.name != currentGameNumber.ToString())
+                {
+                    localDistractorTime += 4;
+                    // play sound or show text
+                    //AudioSource.PlayClipAtPoint(wrongAnswer, Camera.main.transform.position);
+                    InstructionTimer.color = Color.red;
+                }
+                else
+                    InstructionTimer.color = Color.white;
+                ResetCardGame();
+            } else if (localTimer <= 0) {
+                InstructionTimer.color = Color.red;
+                localDistractorTime += 4;
+                // play sound or show text
+                //AudioSource.PlayClipAtPoint(wrongAnswer, Camera.main.transform.position);
+                ResetCardGame();
+            }
+
+            if (localDistractorTime < 3.5f)
+            {
+                if (!soundPlayed)
+                {
+                    AudioSource.PlayClipAtPoint(TimesUp, transform.position);
+                    soundPlayed = true;
+                }
+            }
+
+            // times up or finish one set, who comes second
+            if (localDistractorTime < 0.05f)
+                HidePlayground();
+        }
+       
+        //Instruction.transform.position = new Vector3(0, 1.5f, 1.35f);
+        //Instruction.text = "Score: " + shootTotalNumber + "\n";
+
+        
+        
+    }
+
+    private void CheckGameResult() {
+        bool allCorrect = true;
+
+        for (int i = 0; i < selectedGameCards.Count; i++) {
+            if (selectedGameCards[i].name != currentGameTask[i].ToString())
+                allCorrect = false;
         }
 
-        if (localDistractorTime < 0.05f)
-            HidePlayground();
+        if (allCorrect) {
+            gameFinshedCount++;
+        }
+
+        ResetCardGame();
+    }
+
+    private void ResetCardGame() {
+        localTimer = 4;
+
+        // reset border color
+        foreach (GameObject go in gameCards)
+        {
+            go.GetComponent<Card>().filled = false;
+            go.GetComponent<Card>().seen = false;
+            go.GetComponent<Card>().selected = false;
+            go.GetComponent<Card>().ResetBorderColor();
+        }
+
+        // shuffle order for cards
+        for (int i = 0; i < CardGame.childCount; i++)
+        {
+            Vector3 temp = CardGame.GetChild(i).localPosition;
+            int randomIndex = Random.Range(i, CardGame.childCount);
+            CardGame.GetChild(i).localPosition = CardGame.GetChild(randomIndex).localPosition;
+            CardGame.GetChild(randomIndex).localPosition = temp;
+        }
+
+        selectedGameCards.Clear();
+
+        if (StartSceneScript.distratorType == 0)
+        {
+            currentGameTask = GetCurrentGameTask();
+            CardGame.gameObject.SetActive(false);
+
+            Instruction.text = string.Join(", ", currentGameTask);
+            WriteInteractionToLog("Task: " + string.Join(";", currentGameTask));
+        }
+        else {
+            int task = RandomNumber(1, 9);
+            currentGameNumber = task;
+
+            Instruction.text = task + "";
+            WriteInteractionToLog("Task: " + task);
+        }
     }
 
 
@@ -781,14 +1029,14 @@ public class ExperimentManager : MonoBehaviour
         switch (experimentSequence)
         {
             case 1:
-                if (trialNo <= 10)
+                if (trialNo % 2 == 1)
                     return Layout.Flat;
                 else if(trialNo <= 20)
                     return Layout.FullCircle;
                 else
                     return Layout.LimitedFlat;
             case 2:
-                if (trialNo <= 10)
+                if (trialNo % 2 == 1)
                     return Layout.FullCircle;
                 else
                     return Layout.Flat;
@@ -850,6 +1098,26 @@ public class ExperimentManager : MonoBehaviour
         return 5;
     }
 
+    private int[] GetCurrentGameTask() {
+        if (GameTaskList.Count > 0)
+        {
+            int[] PatternID = new int[difficultyLevel];
+            string[] PatternIDString = new string[difficultyLevel];
+
+            PatternIDString = GameTaskList[0].Split(fieldSeperator);
+
+            GameTaskList.RemoveAt(0);
+
+            for (int i = 0; i < difficultyLevel; i++)
+            {
+                PatternID[i] = int.Parse(PatternIDString[i]);
+            }
+            return PatternID;
+        }
+
+        return null;
+    }
+
     // get current pattern
     private int[] GetCurrentPattern()
     {
@@ -906,25 +1174,25 @@ public class ExperimentManager : MonoBehaviour
             //    }
             //    return PatternID;
             //}
-            if (failedTraining)
-            {
-                if (LvL5SuppTaskList.Count > 0)
-                {
-                    int[] PatternID = new int[difficultyLevel];
-                    string[] PatternIDString = new string[difficultyLevel];
+            //if (failedTraining)
+            //{
+            //    if (LvL5SuppTaskList.Count > 0)
+            //    {
+            //        int[] PatternID = new int[difficultyLevel];
+            //        string[] PatternIDString = new string[difficultyLevel];
 
-                    PatternIDString = LvL5SuppTaskList[0].Split(fieldSeperator);
+            //        PatternIDString = LvL5SuppTaskList[0].Split(fieldSeperator);
 
-                    LvL5SuppTaskList.RemoveAt(0);
+            //        LvL5SuppTaskList.RemoveAt(0);
 
-                    for (int i = 0; i < difficultyLevel; i++)
-                    {
-                        PatternID[i] = int.Parse(PatternIDString[i]);
-                    }
-                    return PatternID;
-                }
-            }
-            else {
+            //        for (int i = 0; i < difficultyLevel; i++)
+            //        {
+            //            PatternID[i] = int.Parse(PatternIDString[i]);
+            //        }
+            //        return PatternID;
+            //    }
+            //}
+            //else {
                 if (layout == Layout.Flat || layout == Layout.LimitedFlat)
                 {
                     if (LvL5FlatTaskList.Count > 0)
@@ -961,7 +1229,7 @@ public class ExperimentManager : MonoBehaviour
                         return PatternID;
                     }
                 }
-            } 
+            //} 
         }
         return null;
     }
@@ -1100,30 +1368,32 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
+        CardGame.localPosition = new Vector3(0, adjustedHeight, 0);
+
         switch (localLayout) {
             case Layout.Flat:
                 transform.localPosition = new Vector3(0, adjustedHeight, -1);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
                 FilterCube.gameObject.SetActive(false);
-                EdgeIndicator.gameObject.SetActive(false);
+                //EdgeIndicator.gameObject.SetActive(false);
                 break;
             case Layout.LimitedFlat:
                 transform.localPosition = new Vector3(0, adjustedHeight, -1);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
                 FilterCube.gameObject.SetActive(true);
-                EdgeIndicator.gameObject.SetActive(false);
+                //EdgeIndicator.gameObject.SetActive(false);
                 break;
             case Layout.FullCircle:
                 transform.localPosition = new Vector3(0, adjustedHeight, 0);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
                 FilterCube.gameObject.SetActive(false);
-                EdgeIndicator.gameObject.SetActive(true);
+                //EdgeIndicator.gameObject.SetActive(true);
                 break;
             case Layout.LimitedFullCircle:
                 transform.localPosition = new Vector3(0, adjustedHeight, 0);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
                 FilterCube.gameObject.SetActive(true);
-                EdgeIndicator.gameObject.SetActive(true);
+                //EdgeIndicator.gameObject.SetActive(true);
                 break;
             default:
                 break;
@@ -1411,6 +1681,11 @@ public class ExperimentManager : MonoBehaviour
         lines = new string[20];
         lines = Patterns5Supp.text.Split(lineSeperater);
         LvL5SuppTaskList.AddRange(lines);
+
+        // game task
+        lines = new string[40];
+        lines = GameTask.text.Split(lineSeperater);
+        GameTaskList.AddRange(lines);
     }
 
     /// Log related functions START
@@ -1451,7 +1726,7 @@ public class ExperimentManager : MonoBehaviour
         if (writerAnswer != null)
         {
             writerAnswer.WriteLine(StartSceneScript.ParticipantID + "," + GetTrialNumber() + "," + GetTrialID() + "," + GetLayout() + "," +
-                GetDifficulty() + "," + GetAccuracy() + "," + GetShootAccuracy() + "," + GetSeenTime() + "," + GetSelectTime());
+                GetDifficulty() + "," + GetAccuracy() + "," + GetSeenTime() + "," + GetSelectTime());
             writerAnswer.Flush();
         }
     }
@@ -1461,13 +1736,16 @@ public class ExperimentManager : MonoBehaviour
         {
             if (info.Contains("seen"))
                 writerInteraction.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," + 
-                    StartSceneScript.ParticipantID + "," + GetLayout() + "," + "Card," + info.Split(' ')[0].Remove(0, 4) + ",,");
+                    StartSceneScript.ParticipantID + "," + GetLayout() + "," + "Card," + info.Split(' ')[0].Remove(0, 4) + ",,,");
             else if(info.Contains("selected"))
                 writerInteraction.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," +
-                   StartSceneScript.ParticipantID + "," + GetLayout() + "," + "Card,," + info.Split(' ')[0].Remove(0, 4) + ",");
+                   StartSceneScript.ParticipantID + "," + GetLayout() + "," + "Card,," + info.Split(' ')[0].Remove(0, 4) + ",,");
             else if(info.Contains("answered"))
                 writerInteraction.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," +
-                   StartSceneScript.ParticipantID + "," + GetLayout() + "," + "Card,,," + info.Split(' ')[0].Remove(0, 4));
+                   StartSceneScript.ParticipantID + "," + GetLayout() + "," + "Card,,," + info.Split(' ')[0].Remove(0, 4) + ",");
+            else if (info.Contains("played"))
+                writerInteraction.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," +
+                   StartSceneScript.ParticipantID + "," + GetLayout() + "," + "CardGame,,,," + info.Split(' ')[0]);
             else
                 writerInteraction.WriteLine(GetFixedTime() + "," + GetTrialNumber() + "," + GetTrialID() + "," + StartSceneScript.ParticipantID + "," + GetLayout() + "," + info + ",,,");
             writerInteraction.Flush();
@@ -1533,10 +1811,11 @@ public class ExperimentManager : MonoBehaviour
         //else
         //    return (trialNo - (int)((trialNo - 1) / 7) - 1).ToString();
 
-        if((trialNo - 1) % 10 == 0 || (trialNo - 1) % 10 == 1)
+        if (trialNo == 1 || trialNo == 2)
             return "Training";
         else
-            return (trialNo - (int)((trialNo - 1) / 10) * 2 - 2).ToString();
+            return (trialNo - 2) + "";
+            //return (trialNo - (int)((trialNo - 1) / 10) * 2 - 2).ToString();
     }
 
     private string GetGameState() {
@@ -1582,10 +1861,10 @@ public class ExperimentManager : MonoBehaviour
         return accurateNumber + "";
     }
 
-    private string GetShootAccuracy()
-    {
-        return Basket.shootCount + "";
-    }
+    //private string GetShootAccuracy()
+    //{
+    //    return Basket.shootCount + "";
+    //}
 
     private string GetSeenTime()
     {
@@ -1707,5 +1986,10 @@ public class ExperimentManager : MonoBehaviour
 #else
          Application.Quit();
 #endif
+    }
+
+    public int RandomNumber(int min, int max)
+    {
+        return Random.Range(min, max);
     }
 }
