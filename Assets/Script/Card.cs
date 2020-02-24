@@ -36,6 +36,9 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
+        Color bothColor = new Color(27f / 255f, 158f / 255f, 119f / 255f);
+        Color seenColor = new Color(217f / 255f, 95f / 255f, 2f / 255f);
+        Color touchedColor = new Color(117f / 255f, 112f / 255f, 179f / 255f);
         if (em == null)
         {
             if (GameObject.Find("FromStartScene") != null && 
@@ -47,23 +50,25 @@ public class Card : MonoBehaviour
                 {
                     foreach (Transform t in borders)
                     {
-                        t.GetComponent<Image>().color = Color.yellow;
+                        t.GetComponent<Image>().color = seenColor;
                     }
                 }
                 else if (filled && !seen && selected)
                 {
                     foreach (Transform t in borders)
                     {
-                        t.GetComponent<Image>().color = Color.blue;
+                        t.GetComponent<Image>().color = touchedColor;
                     }
                 }
                 else if (filled && seen && selected)
                 {
                     foreach (Transform t in borders)
                     {
-                        t.GetComponent<Image>().color = Color.green;
+                        t.GetComponent<Image>().color = bothColor; 
                     }
                 }
+                
+
             }
             else
             {
@@ -81,29 +86,33 @@ public class Card : MonoBehaviour
                 {
                     foreach (Transform t in borders)
                     {
-                        t.GetComponent<Image>().color = Color.yellow;
+                        t.GetComponent<Image>().color = seenColor;
                     }
                 }
                 else if (filled && !seen && selected)
                 {
                     foreach (Transform t in borders)
                     {
-                        t.GetComponent<Image>().color = Color.blue;
+                        t.GetComponent<Image>().color = touchedColor;
                     }
                 }
                 else if (filled && seen && selected)
                 {
                     foreach (Transform t in borders)
                     {
-                        t.GetComponent<Image>().color = Color.green;
+                        t.GetComponent<Image>().color = bothColor;
                     }
                 }
-                else if (filled && !seen && !selected) {
+                else if (filled && !seen && !selected)
+                {
                     foreach (Transform t in borders)
                     {
                         t.GetComponent<Image>().color = Color.white;
                     }
                 }
+
+
+
             }
             else
             {
