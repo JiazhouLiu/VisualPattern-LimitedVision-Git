@@ -44,11 +44,17 @@ for aList in list(trialList):
 
 resultString = "Layout,Error\n"
 for a in list(result):
-  if (counter % 2) == 0:
-    resultString += "Flat," + str(a) + "\n"
-  else:
-    resultString += "Circle," + str(a) + "\n"
-  counter += 1
+    if counter % 2 == 0:
+        if int(pNum) % 2 == 0:
+          resultString += "Full Circle," + str(a) + "\n"
+        else:
+          resultString += "Flat," + str(a) + "\n"
+    else:
+        if int(pNum) % 2 == 0:
+            resultString += "Flat," + str(a) + "\n"
+        else:
+            resultString += "Full Circle," + str(a) + "\n"
+    counter += 1
 
 f = open("result_" + pNum + "_ManhattanAccuracy.csv", "w")
 f.write(resultString)
