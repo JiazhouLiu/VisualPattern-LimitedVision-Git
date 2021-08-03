@@ -48,9 +48,9 @@ public class ControllerColor : MonoBehaviour {
             gripIndex = 1;
             grip2Index = -1;
             menuIndex = 2;
-            thumbstickIndex = 3;
-            trackpadIndex = 5;
-            triggerIndex = 6;
+            thumbstickIndex = 6;
+            trackpadIndex = 8;
+            triggerIndex = 9;
             systemIndex = -1;
         }
     }
@@ -62,7 +62,7 @@ public class ControllerColor : MonoBehaviour {
         {
             if (transform.parent.name == "Controller (right)")
             {
-                if (bodyIndex > 0)
+                if (bodyIndex >= 0)
                     transform.GetChild(bodyIndex).GetComponent<MeshRenderer>().material = white;
 
                 if (gripIndex > 0)

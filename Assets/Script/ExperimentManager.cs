@@ -32,6 +32,9 @@ public class ExperimentManager : MonoBehaviour
     [Header("Prefabs")]
     public GameObject CardPrefab;
     public Sprite ShapePrefab1;
+    public GameObject FOVBlanket;
+    public Transform FlatLandmarks;
+    public Transform CircularLandmarks;
     //public Text DashBoardText;
     //public Text SeenCardText;
     //public Text SelectCardText;
@@ -72,6 +75,8 @@ public class ExperimentManager : MonoBehaviour
     [Header("Variables")]
     public Layout layout;
     public int difficultyLevel;
+    public bool BlindFold;
+    public bool Landmark;
 
     /// <summary>
     /// local variables
@@ -235,9 +240,27 @@ public class ExperimentManager : MonoBehaviour
     void Update()
     {
         if (layout == Layout.FullCircle)
+        {
             transform.localEulerAngles = new Vector3(0, 15, 0);
-        else
+            if(BlindFold)
+                FOVBlanket.SetActive(false);
+            if (Landmark) {
+                CircularLandmarks.position = new Vector3(0, adjustedHeight, 0);
+                CircularLandmarks.gameObject.SetActive(true);
+                FlatLandmarks.gameObject.SetActive(false);
+            }
+        }
+        else {
+            if(BlindFold)
+                FOVBlanket.SetActive(true);
+            if (Landmark) {
+                FlatLandmarks.position = new Vector3(0, adjustedHeight, 1);
+                FlatLandmarks.gameObject.SetActive(true);
+                CircularLandmarks.gameObject.SetActive(false);
+            }
             transform.localEulerAngles = new Vector3(0, 0, 0);
+        }
+            
 
         if (mainController == null) {
             if (mainHand == 0) {

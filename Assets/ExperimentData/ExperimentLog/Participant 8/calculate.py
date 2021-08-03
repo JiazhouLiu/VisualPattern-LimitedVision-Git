@@ -10,7 +10,8 @@ else:
   pNum = cwd[-2] + cwd[-1]
 
 # Retrieve Manhattan Distance Error
-counter = 0  
+counter = 0
+counter2 = 0
 r = 12
 result = []
 trialList = [[0 for x in range(5)] for y in range(18)]
@@ -39,8 +40,24 @@ for aList in list(trialList):
     a = int(tmpA)
     for tmpB in list(bList):
       b = int(tmpB)
-      matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a/r) - int(b/r)) + abs(a%r - b%r))
+      if counter2 % 2 == 0:
+          if int(pNum) % 2 == 0:
+              if abs(a % r - b % r) == 11:
+                  matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a / r) - int(b / r)) + 1)
+              else:
+                  matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a / r) - int(b / r)) + abs(a % r - b % r))
+          else:
+              matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a / r) - int(b / r)) + abs(a % r - b % r))
+      else:
+          if int(pNum) % 2 == 0:
+              matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a / r) - int(b / r)) + abs(a % r - b % r))
+          else:
+              if abs(a % r - b % r) == 11:
+                  matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a / r) - int(b / r)) + 1)
+              else:
+                  matrix[bList.index(tmpB)][aList.index(tmpA)] = (abs(int(a / r) - int(b / r)) + abs(a % r - b % r))
   result.append(min([sum([matrix[p[0]][p[1]] for p in enumerate(perm)]) for perm in itertools.permutations(range(len(matrix)))]))
+  counter2 += 1
 
 resultString = "Layout,Error\n"
 for a in list(result):

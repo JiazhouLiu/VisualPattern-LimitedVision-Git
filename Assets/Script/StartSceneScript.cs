@@ -21,7 +21,7 @@ public class StartSceneScript : MonoBehaviour
     public static int distratorType = 1;
 
     [Header("Do Not Change")]
-    public int trainingCount = 0; // 0: Space, 1: Card, 2: Basketball 3: GO TO Experiment
+    public int trainingCount = 0; // 0: start 8: GO TO Experiment
 
     public Text instruction;
     public Text instruction2;

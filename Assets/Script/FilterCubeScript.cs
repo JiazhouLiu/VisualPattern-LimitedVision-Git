@@ -6,50 +6,39 @@ public class FilterCubeScript : MonoBehaviour
 {
     public float radius;
     public float degreeOfView;
-    public Transform manager;
-
-    public bool CollisionDetection = false;
-
-    private Layout oldLayout = Layout.NULL;
+    public ExperimentManager manager;
+    public Transform MainCamera;
 
     private void Start()
     {
-        transform.localScale = new Vector3(degreeOfView * Mathf.PI * radius / 180, StartSceneScript.adjustedHeight + 1.5f, 2 * radius);
+        //transform.localScale = new Vector3(degreeOfView * Mathf.PI * radius / 180, 2, 2 * radius);
+        transform.GetChild(0).localPosition = new Vector3(degreeOfView * Mathf.PI * radius / 360, 0, 0);
+        transform.GetChild(1).localPosition = new Vector3(-degreeOfView * Mathf.PI * radius / 360, 0, 0);
 
-        Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
-        int[] triangles = GetComponent<MeshFilter>().mesh.triangles;
-        for (int i = 6; i < 12; i++) {
-            triangles[i] = 0;
-        }
+        //Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
+        //int[] triangles = GetComponent<MeshFilter>().mesh.triangles;
+        //for (int i = 0; i < 18; i++) {
+        //    triangles[i] = 0;
+        //}
 
-        Mesh mesh = GetComponent<MeshFilter>().mesh;
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.Optimize();
-        mesh.RecalculateNormals();
+        //Mesh mesh = GetComponent<MeshFilter>().mesh;
+        //mesh.Clear();
+        //mesh.vertices = vertices;
+        //mesh.triangles = triangles;
+        //mesh.Optimize();
+        //mesh.RecalculateNormals();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = Camera.main.transform.position;
-        transform.position = new Vector3(transform.position.x, (StartSceneScript.adjustedHeight + 1.25f) / 2, transform.position.z);
-
+        transform.position = new Vector3(MainCamera.position.x, 1, MainCamera.position.z);
         if (manager != null) {
-            if (manager.GetComponent<ExperimentManager>().layout != oldLayout)
-            {
-                oldLayout = manager.GetComponent<ExperimentManager>().layout;
-            }
-
-            if (oldLayout == Layout.LimitedFlat)
-            {
-                transform.eulerAngles = new Vector3(0, 0, 0);
-            }
+            if (manager.layout == Layout.Flat)
+                transform.localEulerAngles = Vector3.zero;
             else
-            {
-                transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
-            }
+                transform.localEulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
         }
+        
     }
 }
