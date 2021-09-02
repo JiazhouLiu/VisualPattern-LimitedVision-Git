@@ -228,6 +228,7 @@
     <Compile Include="Assets\Script\ControllerColor.cs" />
     <Compile Include="Assets\Script\ExperimentManager.cs" />
     <Compile Include="Assets\Script\FilterCubeScript.cs" />
+    <Compile Include="Assets\Script\LimitedVisionController.cs" />
     <Compile Include="Assets\Script\ReplayManager.cs" />
     <Compile Include="Assets\Script\StartSceneScript.cs" />
     <None Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Shaders\XingLightShader.shader" />

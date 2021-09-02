@@ -32,7 +32,7 @@ public class ExperimentManager : MonoBehaviour
     [Header("Prefabs")]
     public GameObject CardPrefab;
     public Sprite ShapePrefab1;
-    public GameObject FOVBlanket;
+    public GameObject LimitedVisionGO;
     public Transform FlatLandmarks;
     public Transform CircularLandmarks;
     //public Text DashBoardText;
@@ -45,7 +45,7 @@ public class ExperimentManager : MonoBehaviour
     public Transform FootPrint;
     public TextMeshProUGUI LeftControllerText;
     public TextMeshProUGUI RightControllerText;
-    public Transform FilterCube;
+    //public Transform FilterCube;
     //public Transform EdgeIndicator;
     //public Transform Hoop;
     //public Transform Stand;
@@ -243,20 +243,25 @@ public class ExperimentManager : MonoBehaviour
         {
             transform.localEulerAngles = new Vector3(0, 15, 0);
             if(BlindFold)
-                FOVBlanket.SetActive(false);
+                LimitedVisionGO.SetActive(true);
             if (Landmark) {
-                CircularLandmarks.position = new Vector3(0, adjustedHeight, 0);
-                CircularLandmarks.gameObject.SetActive(true);
-                FlatLandmarks.gameObject.SetActive(false);
+                if (gameState == GameState.ShowPattern || gameState == GameState.SelectCards) {
+                    CircularLandmarks.position = new Vector3(0, adjustedHeight, 0);
+                    CircularLandmarks.gameObject.SetActive(true);
+                    FlatLandmarks.gameObject.SetActive(false);
+                }  
             }
         }
         else {
             if(BlindFold)
-                FOVBlanket.SetActive(true);
+                LimitedVisionGO.SetActive(true);
             if (Landmark) {
-                FlatLandmarks.position = new Vector3(0, adjustedHeight, 1);
-                FlatLandmarks.gameObject.SetActive(true);
-                CircularLandmarks.gameObject.SetActive(false);
+                if (gameState == GameState.ShowPattern || gameState == GameState.SelectCards)
+                {
+                    FlatLandmarks.position = new Vector3(0, adjustedHeight, 1);
+                    FlatLandmarks.gameObject.SetActive(true);
+                    CircularLandmarks.gameObject.SetActive(false);
+                }
             }
             transform.localEulerAngles = new Vector3(0, 0, 0);
         }
@@ -734,8 +739,8 @@ public class ExperimentManager : MonoBehaviour
             }
             //if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
                 //EdgeIndicator.gameObject.SetActive(false);
-            if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
-                FilterCube.gameObject.SetActive(false);
+            //if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
+            //    FilterCube.gameObject.SetActive(false);
 
             // check position
             if (Camera.main.transform.position.x < 0.4f && Camera.main.transform.position.x > -0.4f && Camera.main.transform.position.z < 0.4f &&
@@ -822,8 +827,8 @@ public class ExperimentManager : MonoBehaviour
                 }
                 //if (layout == Layout.FullCircle || layout == Layout.LimitedFullCircle)
                     //EdgeIndicator.gameObject.SetActive(true);
-                if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
-                    FilterCube.gameObject.SetActive(true);
+                //if (layout == Layout.LimitedFlat || layout == Layout.LimitedFullCircle)
+                //    FilterCube.gameObject.SetActive(true);
 
                 Instruction.transform.parent.parent.position = new Vector3(0, 2.5f, 1.35f);
 
@@ -1397,25 +1402,25 @@ public class ExperimentManager : MonoBehaviour
             case Layout.Flat:
                 transform.localPosition = new Vector3(0, adjustedHeight, -1);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
-                FilterCube.gameObject.SetActive(false);
+                //FilterCube.gameObject.SetActive(false);
                 //EdgeIndicator.gameObject.SetActive(false);
                 break;
             case Layout.LimitedFlat:
                 transform.localPosition = new Vector3(0, adjustedHeight, -1);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
-                FilterCube.gameObject.SetActive(true);
+                //FilterCube.gameObject.SetActive(true);
                 //EdgeIndicator.gameObject.SetActive(false);
                 break;
             case Layout.FullCircle:
                 transform.localPosition = new Vector3(0, adjustedHeight, 0);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
-                FilterCube.gameObject.SetActive(false);
+                //FilterCube.gameObject.SetActive(false);
                 //EdgeIndicator.gameObject.SetActive(true);
                 break;
             case Layout.LimitedFullCircle:
                 transform.localPosition = new Vector3(0, adjustedHeight, 0);
                 GameObject.Find("PreferableStand").transform.localPosition = new Vector3(0, 0.01f, 0);
-                FilterCube.gameObject.SetActive(true);
+                //FilterCube.gameObject.SetActive(true);
                 //EdgeIndicator.gameObject.SetActive(true);
                 break;
             default:

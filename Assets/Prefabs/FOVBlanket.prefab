@@ -204,7 +204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5179713509758038947
 Transform:
   m_ObjectHideFlags: 0
@@ -233,8 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33a2dda41cc6fb545a8538f685084f01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 1
+  radius: 0.75
   degreeOfView: 110
   manager: {fileID: 0}
   MainCamera: {fileID: 0}
-  CollisionDetection: 0
